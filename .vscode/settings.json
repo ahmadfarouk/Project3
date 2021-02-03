@@ -1,7 +1,5 @@
 {
 <<<<<<< HEAD
-    "python.pythonPath": "C:\\Users\\Ahmad Abo Alafa\\anaconda3\\python.exe"
-=======
     "python.pythonPath": "/usr/local/anaconda3/bin/python",
     "liveServer.settings.port": 5504
 >>>>>>> 4f8de06a0bc61b31b16cdcbc1a5193e34eabe812
