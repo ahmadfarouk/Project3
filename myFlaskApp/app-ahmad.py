@@ -24,12 +24,7 @@ def index():
 
 @app.route("/api/v1.0/stations")
 def stations():
-    return jsonify(allStations)
-
-# 4. Define main behavior
-if __name__ == "__main__":
     allStations = []
-    
     Stations_all = session.query(Station.station,Station.name, Station.latitude,Station.longitude, Station.elevation).all()
     for result2 in Stations_all:
         row = {}
@@ -39,5 +34,8 @@ if __name__ == "__main__":
         row["longitude"] = result2[3]
         row["elevation"] = result2[4]
         allStations.append(row)
-    
+    return jsonify(allStations)
+
+# 4. Define main behavior
+if __name__ == "__main__":
     app.run(debug=True)
