@@ -1,6 +1,6 @@
-d3.json("/api/v1.0/titles").then(function(data) {
-    console.log(data)
-})
+// d3.json("/api/v1.0/titles").then(function(data) {
+//     console.log(data)
+// })
 
 // Netflix - Plotly.js
 function buildPlot(sample) { 
@@ -108,20 +108,18 @@ function readData(sample){
 function init() {
     drop_down=d3.select('#selDataset');
 
-    d3.json("samples.json").then((data) => {
-       var ids_selection= data.names;
-
+    d3.json("/api/v1.0/titles_country").then((data) => {
         //loop through ids_selection and append option to drop_down
-        ids_selection.forEach((sample)=>
+        data.forEach((item)=>
         {
-            drop_down.append('option').text(sample).property("value", sample);
+            drop_down.append('option').text(item.country_name).property("value", item.country_name);
         });
 
         //grab the first sample and build the charts on the page for page load
-        firstSample=ids_selection[0]
-        buildPlot(firstSample);
-        readData(firstSample);
-        buildGauge(firstSample);
+        //firstSample=ids_selection[0]
+        // buildPlot(firstSample);
+        // readData(firstSample);
+        // buildGauge(firstSample);
     })
 }
 

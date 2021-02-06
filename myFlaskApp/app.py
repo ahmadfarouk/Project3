@@ -58,8 +58,8 @@ def titles_country():
     countries_count = session.query (country.country_name, func.count(title.show_id)).filter(title.show_id==title_country.show_id,).filter(title_country.country_id == country.country_id).group_by(country.country_name).all()
     for result4 in countries_count:
         row = {}
-        row["Count of Titles"] = result4[1]
-        row["country name"] = result4[0]
+        row["Count_of_Titles"] = result4[1]
+        row["country_name"] = result4[0]
         titles_countries.append(row)
     return jsonify(titles_countries) 
 # 4. Define main behavior
