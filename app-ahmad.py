@@ -11,7 +11,7 @@ import datetime as dt
 engine = create_engine("sqlite:///Resources/hawaii.sqlite")
 Base = automap_base()
 Base.prepare(engine, reflect=True)
-Measurement = Base.classes.measurement
+
 #print (Base.classes.keys())
 
 session = Session(engine)
