@@ -2,9 +2,10 @@ d3.json("/api/v1.0/titles").then(function(data) {
     console.log(data)
 })
 
-// Belly Button Biodiversity - Plotly.js
+// Netflix - Plotly.js
 function buildPlot(sample) { 
-    d3.json("samples.json").then(function(data){ 
+    d3.json("/api/v1.0/titles").then(function(data) {
+        console.log(data)
    // var sampledata=data.sample.filter(sample => sample.id == filter_otu_id)
    var samples = data.samples;
    var resultArray =samples.filter(sampleObj => sampleObj.id==sample);

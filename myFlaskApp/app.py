@@ -21,6 +21,7 @@ players = Base.classes.players
 pg_rating = Base.classes.pg_rating
 director = Base.classes.director
 
+
 session = Session(engine)
 
 app = Flask(__name__)
@@ -38,10 +39,27 @@ def titles():
         row["title"] = result2[0]
         row["description"] = result2[1]
         row["date_added"] = result2[2]
-#         row["longitude"] = result2[3]
+        #row["country"] = result2[3]
 #         row["elevation"] = result2[4]
         allTitles.append(row)
     return jsonify(allTitles)
+
+
+@app.route("/api/v1.0/countries")
+def countries():
+    allCountries = []
+    Countries = session.query(country.country_id, country.country_name, country.longitude, country.latitude).all()
+    
+    for result3 in Countries:
+        row = {}
+        row["country_id"] = result3[0]
+        row["country_name"] = result3[1]
+        row["longitude"] = result3[2]
+        row["latitude"] = result3[3]
+       
+#         row["elevation"] = result2[4]
+        allCountries.append(row)
+    return jsonify(allCountries)
 
 # 4. Define main behavior
 if __name__ == "__main__":
