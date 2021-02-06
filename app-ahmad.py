@@ -13,6 +13,12 @@ Base = automap_base()
 Base.prepare(engine, reflect=True)
 
 #print (Base.classes.keys())
+title = Base.classes.title
+country = Base.classes.country
+listed_in = Base.classes.listed_in
+players = Base.classes.players
+pg_rating = Base.classes.pg_rating
+director = Base.classes.director
 
 session = Session(engine)
 
