@@ -20,6 +20,7 @@ listed_in = Base.classes.listed_in
 players = Base.classes.players
 pg_rating = Base.classes.pg_rating
 director = Base.classes.director
+number_of_titles_per_country = Base.classes.number_of_titles_per_country
 
 
 session = Session(engine)
@@ -60,6 +61,19 @@ def countries():
 #         row["elevation"] = result2[4]
         allCountries.append(row)
     return jsonify(allCountries)
+
+@app.route("/api/v1.0/titles_country")
+def titles_country():
+    titles_countries= []
+    countries_count = session.query(number_of_titles_per_country.count, number_of_titles_per_country.country_name).all()
+    
+    for result4 in countries_count:
+        row = {}
+        row["count per country"] = result4[0]
+        row["country name"] = result4[1]
+       
+        titles_countries.append(row)
+    return jsonify(titles_countries) 
 
 # 4. Define main behavior
 if __name__ == "__main__":
