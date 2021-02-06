@@ -54,8 +54,8 @@ def countries():
 @app.route("/api/v1.0/titles_country")
 def titles_country():
     titles_countries= []
-    countries_count = session.query (title.show_id, title.title,title_country.show_id, country.country_name, country.country_id).filter(title.show_id==title_country.show_id,).filter(title_country.country_id == country.country_id).all()
-    
+    #countries_count = session.query (title.show_id, title.title,title_country.show_id, country.country_name, country.country_id).filter(title.show_id==title_country.show_id,).filter(title_country.country_id == country.country_id).all()
+    countries_count = session.query (country.country_name, func.count(title.show_id)).filter(title.show_id==title_country.show_id,).filter(title_country.country_id == country.country_id).group_by(country.country_name).all()
     for result4 in countries_count:
         row = {}
         row["Count of Titles"] = result4[1]
