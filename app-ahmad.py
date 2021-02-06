@@ -32,8 +32,7 @@ def index():
 def titles():
     return jsonify(allStations)
 
-# 4. Define main behavior
-if __name__ == "__main__":
+
    allTitles = []
     Titles = session.query(title.title,title.description,title.date_added).all()
     for result2 in Titles:
@@ -69,3 +68,5 @@ if __name__ == "__main__":
         tobs_station_most_active.append(row)
 
     app.run(debug=True)
+# 4. Define main behavior
+if __name__ == "__main__":
