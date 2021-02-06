@@ -28,7 +28,7 @@ app = Flask(__name__)
 def index():
     return render_template("index_ahmad.html")
 
-@app.route("/api/v1.0/stations")
+@app.route("/api/v1.0/titles")
 def stations():
     return jsonify(allStations)
 
