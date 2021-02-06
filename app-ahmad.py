@@ -34,13 +34,13 @@ def titles():
 
 # 4. Define main behavior
 if __name__ == "__main__":
-    max_date = session.query(Measurement.date).order_by(Measurement.date.desc()).first()
-    one_year = dt.timedelta(365)
-    one_year_date = dt.datetime.strptime(max_date[0],"%Y-%m-%d") - one_year
-    Precipitation_12months = session.query(Measurement.date, Measurement.prcp).filter(Measurement.date > one_year_date).order_by(Measurement.date).all()
-    prcp_totals = []
-    allStations = []
-    tobs_station_most_active = []
+   allTitles = []
+    Titles = session.query(title.title,title.description,title.date_added).all()
+    for result2 in Titles:
+        row = {}
+        row["title"] = result2[0]
+        row["description"] = result2[1]
+        row["date_added"] = result2[2]
 
     for result1 in Precipitation_12months:
         row = {}
