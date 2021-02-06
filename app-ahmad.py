@@ -29,7 +29,7 @@ def index():
     return render_template("index_ahmad.html")
 
 @app.route("/api/v1.0/titles")
-def stations():
+def titles():
     return jsonify(allStations)
 
 # 4. Define main behavior
