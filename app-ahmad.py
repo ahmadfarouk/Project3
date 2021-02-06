@@ -40,6 +40,10 @@ def titles():
         row["title"] = result2[0]
         row["description"] = result2[1]
         row["date_added"] = result2[2]
+#        row["longitude"] = result2[3]
+#        row["elevation"] = result2[4]
+        allTitles.append(row)
+    return jsonify(allTitles)
 
    
     app.run(debug=True)
