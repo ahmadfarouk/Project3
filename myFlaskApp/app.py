@@ -20,7 +20,7 @@ listed_in = Base.classes.listed_in
 players = Base.classes.players
 pg_rating = Base.classes.pg_rating
 director = Base.classes.director
-#number_of_titles_per_country = Base.classes.number_of_titles_per_country
+number_of_titles_per_country = Base.classes.number_of_titles_per_country
 
 
 session = Session(engine)
