@@ -12,7 +12,7 @@ engine = create_engine("sqlite:///Resources/hawaii.sqlite")
 Base = automap_base()
 Base.prepare(engine, reflect=True)
 Measurement = Base.classes.measurement
-Station = Base.classes.station
+#print (Base.classes.keys())
 
 session = Session(engine)
 
