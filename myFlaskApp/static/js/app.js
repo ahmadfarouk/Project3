@@ -1,52 +1,44 @@
-// d3.json("/api/v1.0/titles").then(function(data) {
-//     console.log(data)
-// })
+function buildPlot(data, filter_value) { 
 
-// Netflix - Plotly.js
-function buildPlot(sample) { 
-    d3.json("/api/v1.0/titles").then(function(data) {
-        console.log(data)
-   // var sampledata=data.sample.filter(sample => sample.id == filter_otu_id)
-   var samples = data.samples;
-   var resultArray =samples.filter(sampleObj => sampleObj.id==sample);
-   var result = resultArray[0]
-   //console.log(data)
-    
-    //console.log(data) data.samples.filter(sampleobject => sampleobject.id ==sample).otu_ids
-    var ids = result.otu_ids
-    //console.log(ids);
-    var sampleValues = result.sample_values
-    //console.log(sampleValues);
-    var  labels = result.otu_labels;
-    //console.log(labels);
-    //display the top 10 OTUs found in that individual.
-    var otu_top10 = ids.slice(0,10).reverse();
-    var top10sampleValues = sampleValues.slice(0,10).reverse();
-    var  top10labels = labels.slice(0,10)
-    
-    // get the otu id's to the plot
-    var otu_id = otu_top10.map(d => "OTU " + d);
-    //console.log(`OTU IDS: ${otu_id}`)
+    var panel = d3.select("#graph-metadata");
+    panel.html("");
+
+    panel.append("h6").text("The graph shows the number of titles produced by each country per release year");
+
+    var filtered_data=data.filter(d => d.release_year == filter_value)
+    //console.log (filtered_data)
+
+    x_axis = []
+    y_axis = []
+
+    filtered_data.forEach ((d)=>
+    {
+        x_axis.push(d.country_name)
+        y_axis.push(d.Count_of_Titles)
+    });
+
+    //console.log (x_axis)
+    //console.log (y_axis)
 
     var trace1 = {
-        x: top10sampleValues,
-        y: otu_id,
-        text:top10labels,
+        x: x_axis,
+        y: y_axis,
+        text:"Count of Titles by Countries Per Year",
         type: "bar",
-        orientation: "h"
+        orientation: "v"
     };
-    var data = [trace1];
+    var plot_data = [trace1];
 
     var layout ={
-        title: "Top 10 OTU",
+        title: "Count of Titles by Countries Per Year",
         barmode: "group",
-        yaxis: {tickmode:"linear"}
+        //yaxis: {tickmode:"linear"}
     };
-    Plotly.newPlot("bar", data, layout)   
+    Plotly.newPlot("bar", plot_data, layout)   
     
     
 
-    //the bubble chart
+/*    //the bubble chart
 
     var trace2 ={
 
@@ -70,10 +62,25 @@ function buildPlot(sample) {
         width: 1000
 
     };
-    Plotly.newPlot("bubble", data2, layout2)
-})
+    Plotly.newPlot("bubble", data2, layout2) */
+//})
     // Bonus: build gauge Chart 
    
+}
+
+var mainForm = d3.select("#selDataset");
+mainForm.on("change", formChange)
+
+function formChange () {
+  d3.event.preventDefault ();
+  var SelectMenu = d3.select(".svg-container");
+  SelectMenu.html("");
+
+  enter_otu_id = d3.select("#selDataset")
+  filter_date_value = enter_otu_id.property("value");
+  console.log(filter_date_value)
+
+  d3.json("/api/v1.0/titles_country").then((data) => {buildPlot(data, filter_date_value);})
 }
 
 function readData(sample){
@@ -86,7 +93,7 @@ function readData(sample){
             //console.log(resultArray)
 
             // use .html("") to clear any existing Data
-            var panel = d3.select("#sample-metadata");
+            var panel = d3.select("#graph-metadata");
             panel.html("");
     
             // Use object.entries to add Each key value pair to the panel
@@ -112,23 +119,24 @@ function init() {
         //loop through ids_selection and append option to drop_down
         data.forEach((item)=>
         {
-            drop_down.append('option').text(item.country_name).property("value", item.country_name);
+            drop_down.append('option').text(item.release_year).property("value", item.release_year);
         });
 
         //grab the first sample and build the charts on the page for page load
-        //firstSample=ids_selection[0]
-        // buildPlot(firstSample);
+        firstRelease_year=data[0].release_year
+        //console.log(firstCountry)
+        buildPlot(data, firstRelease_year);
         // readData(firstSample);
         // buildGauge(firstSample);
     })
 }
 
-function optionChanged (newSample){
+/*function optionChanged (newSample){
     //Fetch New Data Each time a New sample is selcted
     buildPlot(newSample);
     readData(newSample);
     buildGauge(newSample);
-}
+}*/
 
 //call init for page load
 init();
