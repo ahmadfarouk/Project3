@@ -23,6 +23,7 @@ director = Base.classes.director
 title = Base.classes.title
 title_country = Base.classes.title_country
 country = Base.classes.country
+listed_in_title = Base.classes.listed_in_title
 
 session = Session(engine)
 
@@ -59,10 +60,10 @@ def countries():
         allCountries.append(row)
     return jsonify(allCountries)
 
+####Country vs y: Count of Titles, drop down: Year ----done
 @app.route("/api/v1.0/titles_country")
 def titles_country():
     titles_countries_years= []
-    #countries_count = session.query (title.show_id, title.title,title_country.show_id, country.country_name, country.country_id).filter(title.show_id==title_country.show_id,).filter(title_country.country_id == country.country_id).all()
     countries_count = session.query (country.country_name, title.release_year, func.count(title.show_id)).filter(title.show_id==title_country.show_id,).filter(title_country.country_id == country.country_id).group_by(country.country_name, title.release_year).all()
     for result4 in countries_count:
         row = {}
@@ -70,7 +71,55 @@ def titles_country():
         row["release_year"] = result4[1]
         row["Count_of_Titles"] = result4[2]
         titles_countries_years.append(row)
-    return jsonify(titles_countries_years) 
+    return jsonify(titles_countries_years)
+
+####x: Budget vs y: Movie Revenue 
+@app.route("/api/v1.0/budget_revenue")
+def budget_revenue():
+    budget_revenue_all= []
+    budget_revenue = session.query (title.budget, title.revenue).filter(title.budget!=0,).filter(title.revenue != 0).all()
+    for result5 in budget_revenue:
+        row = {}
+        row["Budget"] = result5[0]
+        row["Revenue"] = result5[1]
+        budget_revenue_all.append(row)
+    return jsonify(budget_revenue_all)
+
+####x: Budget vs y: rating
+@app.route("/api/v1.0/pgrating_totalbudget")
+def pgrating_totalbudget():
+    pgrating_totalbudget_all= []
+    pgrating_totalbudget = session.query (pg_rating.pg_rating_name, func.sum(title.budget)).filter(title.pg_rating_id==pg_rating.pg_rating_id).group_by(pg_rating.pg_rating_name).all()
+    for result6 in pgrating_totalbudget:
+        row = {}
+        row["PG_Rating"] = result6[0]
+        row["Total_budget"] = result6[1]
+        pgrating_totalbudget_all.append(row)
+    return jsonify(pgrating_totalbudget_all)
+
+####x: Budget vs y: Country
+@app.route("/api/v1.0/country_budget")
+def country_budget():
+    country_budget_all= []
+    country_budget = session.query (country.country_name, func.sum(title.budget)).filter(title.show_id == title_country.show_id,).filter(title_country.country_id == country.country_id).group_by(country.country_name).all()
+    for result7 in country_budget:
+        row = {}
+        row["country_name"] = result7[0]
+        row["budget"] = result7[1]
+        country_budget_all.append(row)
+    return jsonify(country_budget_all)
+
+####x: Listed In vs y: Count of titles
+@app.route("/api/v1.0/listedin_count")
+def listedin_count():
+    listedin_count_all= []
+    listedin_count = session.query (listed_in.listed_in_name, func.count(title.show_id)).filter(title.show_id == listed_in_title.show_id,).filter(listed_in.listed_in_id == listed_in_title.listed_in_id).group_by(listed_in.listed_in_name).all()
+    for result8 in listedin_count:
+        row = {}
+        row["Listed_in_name"] = result8[0]
+        row["Count"] = result8[1]
+        listedin_count_all.append(row)
+    return jsonify(listedin_count_all)
 
 # 4. Define main behavior
 
