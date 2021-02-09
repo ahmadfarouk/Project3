@@ -94,6 +94,9 @@ def budget_revenue():
 def pgrating_totalbudget():
 pgrating_totalbudget_all= []
     pgrating_totalbudget = session.query (pg_rating.pg_rating_name, func.sum(title.budget)).filter(title.pg_rating_id==pg_rating.pg_rating_id).group_by(pg_rating.pg_rating_name).all()
+    for result6 in pgrating_totalbudget:
+        row = {}
+        row["PG_Rating"] = result6[0]
 
 ####x: Budget vs y: Country
 ​
