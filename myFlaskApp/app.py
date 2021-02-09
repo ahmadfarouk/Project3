@@ -25,6 +25,7 @@ title_country = Base.classes.title_country
 country = Base.classes.country
 ​
 session = Session(engine)
+
 ​
 app = Flask(__name__)
 @app.route("/")
@@ -59,7 +60,7 @@ def countries():
         allCountries.append(row)
     return jsonify(allCountries)
 
-    
+
 ​
 ####Country vs y: Count of Titles, drop down: Year ----done
 @app.route("/api/v1.0/titles_country")
