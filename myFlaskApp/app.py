@@ -96,8 +96,17 @@ def pgrating_totalbudget():
         pgrating_totalbudget_all.append(row)
     return jsonify(pgrating_totalbudget_all)
 
-
 ####x: Budget vs y: Country
+@app.route("/api/v1.0/country_budget")
+def country_budget():
+    country_budget_all= []
+    country_budget = session.query (country.country_name, func.sum(title.budget)).filter(title.show_id == title_country.show_id,).filter(title_country.country_id == country.country_id).group_by(country.country_name).all()
+    for result7 in country_budget:
+        row = {}
+        row["country_name"] = result7[0]
+        row["budget"] = result7[1]
+        country_budget_all.append(row)
+    return jsonify(country_budget_all)
 
 
 
