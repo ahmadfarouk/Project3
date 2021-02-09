@@ -89,7 +89,10 @@ def budget_revenue():
 ​
 ####x: Budget vs y: rating
 ​
-​
+​####x: Budget vs y: rating
+@app.route("/api/v1.0/pgrating_totalbudget")
+def pgrating_totalbudget():
+
 ####x: Budget vs y: Country
 ​
 ​
