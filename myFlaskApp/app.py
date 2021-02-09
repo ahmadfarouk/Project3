@@ -25,7 +25,6 @@ title_country = Base.classes.title_country
 country = Base.classes.country
 ​
 session = Session(engine)
-
 ​
 app = Flask(__name__)
 @app.route("/")
@@ -59,8 +58,6 @@ def countries():
 #         row["elevation"] = result2[4]
         allCountries.append(row)
     return jsonify(allCountries)
-
-
 ​
 ####Country vs y: Count of Titles, drop down: Year ----done
 @app.route("/api/v1.0/titles_country")
@@ -88,11 +85,9 @@ def budget_revenue():
     return jsonify(budget_revenue_all)
 ​
 ####x: Budget vs y: rating
-​
-​####x: Budget vs y: rating
 @app.route("/api/v1.0/pgrating_totalbudget")
 def pgrating_totalbudget():
-pgrating_totalbudget_all= []
+    pgrating_totalbudget_all= []
     pgrating_totalbudget = session.query (pg_rating.pg_rating_name, func.sum(title.budget)).filter(title.pg_rating_id==pg_rating.pg_rating_id).group_by(pg_rating.pg_rating_name).all()
     for result6 in pgrating_totalbudget:
         row = {}
@@ -100,11 +95,14 @@ pgrating_totalbudget_all= []
         row["Total_budget"] = result6[1]
         pgrating_totalbudget_all.append(row)
     return jsonify(pgrating_totalbudget_all)
-
+​
+​
 ####x: Budget vs y: Country
+​
 ​
 ​
 # 4. Define main behavior
 ​
 if __name__ == "__main__":
     app.run(debug=True)
+    
