@@ -58,6 +58,8 @@ def countries():
 #         row["elevation"] = result2[4]
         allCountries.append(row)
     return jsonify(allCountries)
+
+    
 ​
 ####Country vs y: Count of Titles, drop down: Year ----done
 @app.route("/api/v1.0/titles_country")
