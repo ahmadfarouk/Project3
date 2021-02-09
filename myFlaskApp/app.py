@@ -90,7 +90,6 @@ def budget_revenue():
 ####x: Budget vs y: Country
 ​
 ​
-​
 # 4. Define main behavior
 ​
 if __name__ == "__main__":
