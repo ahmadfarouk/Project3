@@ -24,6 +24,7 @@ title = Base.classes.title
 title_country = Base.classes.title_country
 country = Base.classes.country
 listed_in_title = Base.classes.listed_in_title
+director_title = Base.classes.director_title
 
 session = Session(engine)
 
@@ -120,6 +121,19 @@ def listedin_count():
         row["Count"] = result8[1]
         listedin_count_all.append(row)
     return jsonify(listedin_count_all)
+
+####x: Directors vs Count
+@app.route("/api/v1.0/directors_count")
+def directors_count():
+    directors_count_all= []
+    directors_count = session.query (director.director_name, func.count(title.show_id)).filter(director.director_id == director_title.director_id,).filter(title.show_id == director_title.show_id).group_by(director.director_name).all()
+    for result9 in directors_count:
+        row = {}
+        row["director_name"] = result9[0]
+        row["Count"] = result9[1]
+        directors_count_all.append(row)
+    return jsonify(directors_count_all)
+
 
 # 4. Define main behavior
 
