@@ -92,6 +92,8 @@ def budget_revenue():
 ​####x: Budget vs y: rating
 @app.route("/api/v1.0/pgrating_totalbudget")
 def pgrating_totalbudget():
+pgrating_totalbudget_all= []
+    pgrating_totalbudget = session.query (pg_rating.pg_rating_name, func.sum(title.budget)).filter(title.pg_rating_id==pg_rating.pg_rating_id).group_by(pg_rating.pg_rating_name).all()
 
 ####x: Budget vs y: Country
 ​
