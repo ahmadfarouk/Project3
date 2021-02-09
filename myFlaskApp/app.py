@@ -97,6 +97,9 @@ pgrating_totalbudget_all= []
     for result6 in pgrating_totalbudget:
         row = {}
         row["PG_Rating"] = result6[0]
+        row["Total_budget"] = result6[1]
+        pgrating_totalbudget_all.append(row)
+    return jsonify(pgrating_totalbudget_all)
 
 ####x: Budget vs y: Country
 ​
