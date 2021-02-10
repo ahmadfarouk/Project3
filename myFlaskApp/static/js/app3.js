@@ -38,33 +38,7 @@ function buildPlot(data, filter_value) {
     
     
 
-/*    //the bubble chart
 
-    var trace2 ={
-
-        x: ids,
-        y: sampleValues,
-        text:labels,
-        mode: "markers",
-        marker: {
-            size: sampleValues,
-            color: ids,
-            colorscale: "Earth"          
-        },
-        
-    }
-    var data2 =[trace2]
-
-    var layout2 = {
-        xaxis:{title: "OTU ID"},
-        showlegend: true,
-        height: 600,
-        width: 1000
-
-    };
-    Plotly.newPlot("bubble", data2, layout2) */
-//})
-    // Bonus: build gauge Chart 
    
 }
 
