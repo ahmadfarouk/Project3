@@ -42,7 +42,7 @@ function buildPlot(data, filter_value) {
    
 }
 
-  d3.json("/api/v1.0/titles_country").then((data) => {buildPlot(data, filter_date_value);})
+d3.json("/api/v1.0/listedin_count").then((data) => {buildPlot(data);})
 
 
 
