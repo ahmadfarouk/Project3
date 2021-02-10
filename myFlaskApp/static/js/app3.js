@@ -42,19 +42,7 @@ function buildPlot(data, filter_value) {
    
 }
 
-var mainForm = d3.select("#selDataset");
-mainForm.on("change", formChange)
-
-function formChange () {
-  d3.event.preventDefault ();
-  var SelectMenu = d3.select(".svg-container");
-  SelectMenu.html("");
-
-  enter_otu_id = d3.select("#selDataset")
-  filter_date_value = enter_otu_id.property("value");
-  console.log(filter_date_value)
-
   d3.json("/api/v1.0/titles_country").then((data) => {buildPlot(data, filter_date_value);})
-}
+
 
 
