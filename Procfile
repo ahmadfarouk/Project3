@@ -1,1 +1,1 @@
-web: gunicorn myFlaskApp.app-ahmad:app
+web: gunicorn myFlaskApp.app:app

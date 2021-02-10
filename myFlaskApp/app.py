@@ -120,7 +120,7 @@ def listedin_count():
         listedin_count_all.append(row)
     return jsonify(listedin_count_all)
 
-####x: Directors vs Count
+####x: Directors vs Count per release year
 @app.route("/api/v1.0/directors_count")
 def directors_count():
     directors_count_all= []
@@ -133,7 +133,7 @@ def directors_count():
         directors_count_all.append(row)
     return jsonify(directors_count_all)
 
-####x: Directors vs Revenue
+####x: Directors vs Revenue per release year
 @app.route("/api/v1.0/directors_revenue")
 def directors_revenue():
     directors_revenue_all= []
@@ -146,7 +146,7 @@ def directors_revenue():
         directors_revenue_all.append(row)
     return jsonify(directors_revenue_all)
 
-####x: year vs y: revenue
+####x: year vs y: revenue for each player
 @app.route("/api/v1.0/release_year_revenue")
 def release_year_revenue():
     release_year_revenue_all= []
