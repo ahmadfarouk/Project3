@@ -2,3 +2,62 @@ h6{
     font-family: sans-serif;
     color: red;
   }
+
+.navbar-brand
+{
+  font-size: 30px;
+  background-color: rgb(178, 110, 32);
+  font-family: serif;
+  font-weight: bold;
+  display: inline-block;
+  padding: 10px;
+  margin-right: 5px;
+  margin-left: 5px;
+  border-radius: 3px;
+}
+h1,h2
+{
+ color: rgb(178, 73, 32); 
+}
+
+td
+{
+  text-align: left;
+  left: 0%;
+}
+
+tr
+{
+  text-align: left;
+}
+
+th
+{
+  text-align: left;
+}
+
+.borderless {
+  border-top-style: none;
+  border-left-style: none;
+  border-right-style: none;
+  border-bottom-style: none;
+}
+h3
+{
+  color: lightseagreen; 
+  font-size: 20px;
+  text-align: center
+  
+}
+img
+{
+align-content: center ;
+
+}
+
+.div-1 {
+  background: url("Netflix.png") no-repeat center;
+  background-size: cover;
+  height: 1200px;
+  position: relative;
+}
