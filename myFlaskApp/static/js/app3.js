@@ -3,7 +3,7 @@ function buildPlot(data) {
     var panel = d3.select("#graph-metadata");
     panel.html("");
 
-    panel.append("h6").text("The graph shows the number of titles produced by each country per release year");
+    panel.append("h6").text("The Graph shows Count of Titles by Countries Per Year");
 
     var filtered_data=data.filter(d => d.Count != 0)
     // console.log (filtered_data)
