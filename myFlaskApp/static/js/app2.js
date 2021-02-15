@@ -83,4 +83,15 @@ function renderCircles(circlesGroup, newXScale, labelXaxis, newYScale, labelYaxi
   
     return circlesGroup;
   }
+
+  function renderCirclesText(circlesText, newXScale, labelXaxis, newYScale, labelYaxis) {
+
+    circlesText.transition()
+      .duration(1000)
+      .attr("x", d => newXScale(d[labelXaxis]))
+      .attr("y", d => newYScale(d[labelYaxis]));
+  
+    return circlesText;
+  }
+  
   
