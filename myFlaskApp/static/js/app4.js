@@ -1,5 +1,5 @@
-var svgWidth = window.width;
-var svgHeight = window.height;
+var svgWidth = 960;
+var svgHeight = 500;
 
 var margin = {
   top: 20,
@@ -14,7 +14,7 @@ var height = svgHeight - margin.top - margin.bottom;
 // Create an SVG wrapper, append an SVG group that will hold our chart,
 // and shift the latter by left and top margins.
 var svg = d3
-  .select(".chart")
+  .select("#bar")
   .append("svg")
   .attr("width", svgWidth)
   .attr("height", svgHeight);
@@ -24,21 +24,33 @@ var chartGroup = svg.append("g")
   .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
 // Initial Params
-var chosenYAxis = "DirectorCount";
-var chosenXAxis = "Directors";
+var chosenYAxis = "TitleCount";
+var chosenXAxis = "DirectorsName";
 
 // function used for updating x-scale var upon click on axis label
-function xScale(DirectorData, chosenXAxis) {
+
+function xScale(DirectorData, x_index, chosenXAxis) {
   // create scales
-  
   var xLinearScale = d3.scaleLinear()
-    .domain([d3.min(DirectorData, d => d[chosenXAxis]) * 0.8,
-      d3.max(DirectorData, d => d[chosenXAxis]) * 1.2
-    ])
-    .range([0, width]);
-
+  .domain([0,DirectorData[x_index].length * 1.2])
+  .range([0, width]);
+  console.log (DirectorData[x_index].length * 1.2)
   return xLinearScale;
+}
 
+function yScale(DirectorData, y_index, chosenYAxis) {
+  // create scales
+  var factor = 10000
+  if (chosenYAxis != "DirectorsName") {factor = 1}
+
+  var yLinearScale = d3.scaleLinear()
+    .domain([d3.min(Math.round(DirectorData[y_index], d => d[chosenYAxis]) * 0.8),
+      Math.round(d3.max(DirectorData[y_index], d => d[chosenYAxis]) * 1.2 / factor)
+    ])
+    .range([height, 0]);
+  
+  console.log(Math.round(d3.max(DirectorData[y_index], d => d[chosenYAxis]) * 1.2 / factor))
+  return yLinearScale;
 }
 
 // function used for updating xAxis var upon click on axis label
@@ -105,15 +117,46 @@ d3.json("/api/v1.0/directors_count_revenue").then(function(DirectorsData, err) {
       d1.DirectorsName = d1.DirectorsName;
       d1.ReleaseYear = parseTime(d1.ReleaseYear)
       d1.TitleCount = +d1.TitleCount
-      console.log(d1)
+      console.log(d1.TitleCount)
     });
 
   DirectorsData[1].forEach(function(d2) {
       d2.director_name = d2.director_name;
       d2.release_year = parseTime(d2.release_year)
       d2.revenue = +d2.revenue
-      console.log(d2)
     });
+
+    var xLinearScale = xScale(DirectorsData, 0, chosenXAxis);
+
+    var yLinearScale = yScale(DirectorsData, 0, chosenYAxis);
+
+    var bottomAxis = d3.axisBottom(xLinearScale);
+    var leftAxis = d3.axisLeft(yLinearScale);
+
+  // append x axis
+  var xAxis = chartGroup.append("g")
+    .classed("x-axis", true)
+    .attr("transform", `translate(0, ${height})`)
+    .call(bottomAxis);
+
+  // append y axis
+  chartGroup.append("g")
+    .call(leftAxis);
+
+  var circlesGroup = chartGroup.selectAll("circle")
+    .data(DirectorsData[0])
+    .enter()
+    .append("circle")
+    .attr("cx", function (d) {xLinearScale(d[chosenXAxis]), console.log(d[chosenXAxis])})
+    .attr("cy", function (d) {yLinearScale(d[chosenYAxis]), console.log(d[chosenYAxis])})
+    .attr("r", 20)
+    .attr("fill", "pink")
+    .attr("opacity", ".5");
+
+  var labelsGroup = chartGroup.append("g")
+    .attr("transform", `translate(${width / 2}, ${height + 20})`);
+
+  
 
 }).catch(function(error) {
   console.log(error);
