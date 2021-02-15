@@ -260,4 +260,142 @@ var HealthcareLabel = labelsGroupY.append("text")
 .classed("inactive", true)
 .text("Lacks Healthcare (%)");
 
-  
+// updateToolTip function above csv import
+var circlesGroup = updateToolTip(labelXaxis, labelYaxis, circlesGroup);
+
+// x axis labels event listener
+labelsGroupX.selectAll("text")
+  .on("click", function() {
+    // get value of selection
+    var value = d3.select(this).attr("value");
+    if (value !== labelXaxis) {
+
+      // replaces chosenXAxis with value
+      labelXaxis = value;
+
+      // console.log(chosenXAxis)
+
+      // functions here found above csv import
+      // updates x scale for new data
+      xLinearScale = xScale(Data, labelXaxis);
+
+      // updates x axis with transition
+      xAxis = renderAxesX(xLinearScale, xAxis);
+
+      // updates circles with new x values
+      circlesGroup = renderCircles(circlesGroup, xLinearScale, labelXaxis, yLinearScale, labelYaxis);
+
+      //update circle text with new x values
+      circlesText = renderCirclesText(circlesText, xLinearScale, labelXaxis, yLinearScale, labelYaxis)
+      
+      // updates tooltips with new info
+      circlesGroup = updateToolTip(labelXaxis, labelYaxis, circlesGroup);
+
+      
+
+      // changes classes to change bold text for x axis
+      if (labelXaxis === "Budget") {
+        BudgetLabel
+          .classed("active", true)
+          .classed("inactive", false);
+        RevenueLabel
+          .classed("active", false)
+          .classed("inactive", true);
+        TotalbudgetLabel
+          .classed("active", false)
+          .classed("inactive", true);
+      }
+      else if (labelXaxis === "Revenue") {
+        BudgetLabel
+        .classed("active", true)
+        .classed("inactive", false);
+       RevenueLabel
+        .classed("active", false)
+        .classed("inactive", true);
+       TotalbudgetLabel
+        .classed("active", false)
+        .classed("inactive", true);
+      }
+      else if (labelXaxis === "Total_budget") {
+        BudgetLabel
+        .classed("active", true)
+        .classed("inactive", false);
+        RevenueLabel
+        .classed("active", false)
+        .classed("inactive", true);
+        TotalbudgetLabel
+        .classed("active", false)
+        .classed("inactive", true);
+      }
+    }
+  });
+
+
+
+// y axis labels event listener
+labelsGroupY.selectAll("text")
+  .on("click", function() {
+    // get value of selection
+    var value = d3.select(this).attr("value");
+    if (value !== labelYaxis) {
+
+      // replaces chosenYAxis with value
+      labelYaxis= value;
+
+      // functions here found above csv import
+      // updates y scale for new data
+      yLinearScale = yScale(Data, labelYaxis);
+    
+      // updates y axis with transition
+      yAxis = renderAxesY(yLinearScale, yAxis);
+
+      // updates circles with new y values
+      circlesGroup = renderCircles(circlesGroup, xLinearScale, labelXaxis, yLinearScale, labelYaxis);
+
+      //update circle text with new y values
+      circlesText = renderCirclesText(circlesText, xLinearScale, labelXaxis, yLinearScale, labelYaxis)
+      
+      // updates tooltips with new info
+      circlesGroup = updateToolTip(labelXaxis, labelYaxis, circlesGroup);
+
+      
+
+      // changes classes to change bold text for x axis
+      if (labelYaxis === "obesity") {
+        ObesityLabel
+          .classed("active", true)
+          .classed("inactive", false);
+        SmokesLabel
+          .classed("active", false)
+          .classed("inactive", true);
+        HealthcareLabel
+          .classed("active", false)
+          .classed("inactive", true);
+      }
+      else if (labelYaxis  === "smokes") {
+        ObesityLabel
+          .classed("active", false)
+          .classed("inactive", true);
+        SmokesLabel
+          .classed("active", true)
+          .classed("inactive", false);
+        HealthcareLabel
+          .classed("active", false)
+          .classed("inactive", true);
+      }
+      else if (labelYaxis  === "healthcare") {
+        ObesityLabel
+          .classed("active", false)
+          .classed("inactive", true);
+        SmokesLabel
+          .classed("active", false)
+          .classed("inactive", true);
+        HealthcareLabel
+          .classed("active", true)
+          .classed("inactive", false);
+      }
+    }
+  });
+
+
+});
