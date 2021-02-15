@@ -32,7 +32,7 @@ session = Session(engine)
 app = Flask(__name__)
 @app.route("/")
 def index():
-    return render_template("index4.html")
+    return render_template("index.html")
 
 @app.route("/api/v1.0/titles")
 def titles():
@@ -221,6 +221,10 @@ def directors_count_revenue():
 @app.route("/index4")
 def index4():
     return render_template("index4.html")
+
+@app.route("/indexold")
+def indexold():
+    return render_template("index-old.html")
     
 ####x: year vs y: revenue for each player
 @app.route("/api/v1.0/release_year_revenue")
