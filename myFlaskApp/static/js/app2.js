@@ -32,5 +32,21 @@ var chartGroup = svg.append("g")
   var labelXaxis = "Budget";
   var labelYaxis = "Revenue"
 
-            
+// function used for updating X-Scale var upon click
+function xScale(data, labelXaxis) {
+    // create scales
+    var xLinearScale = d3.scaleLinear()
+    .domain([d3.min(data, d=> d[labelXaxis])*0.9,  d3.max(data, d => d[labelXaxis])*1.1])
+    .range([0, width]);
+    return xLinearScale;
+  }
+ 
+  // function used for updating y-scale var upon click on axis label
+ function yScale(data, labelYaxis) {
+   // create scales
+   var yLinearScale = d3.scaleLinear()
+     .domain([d3.min(data, d => d[labelYaxis])*0.9, d3.max(data, d => d[labelYaxis])*1.1])
+     .range([height, 0]);
+ 
+   return yLinearScale; 
  
