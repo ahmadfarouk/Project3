@@ -2,20 +2,6 @@
 
 
 
-/*    //the bubble chart
-
-    var trace2 ={
-
-        x: ids,
-        y: sampleValues,
-        text:labels,
-        mode: "markers",
-        marker: {
-            size: sampleValues,
-            color: ids,
-            colorscale: "Earth"          
-        },
-        
     }
     var data2 =[trace2]
 
