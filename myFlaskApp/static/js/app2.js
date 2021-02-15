@@ -229,4 +229,35 @@ var TotalBudgetabel = labelsGroupX.append("text")
 .classed("inactive", true)
 .text("$");
 
+// Create group for  3 y-axis labels
+var labelsGroupY = chartGroup.append("g")
+.attr("transform", `translate(${margin.left}, ${(height / 2)})`);
+
+var ObesityLabel = labelsGroupY.append("text")
+.attr("transform", "rotate(-90)")
+.attr("x", 0)
+.attr("y", -170)
+// .attr("dy", "1em")
+.attr("value", "obesity") // value to grab for event listener
+.classed("active", true)
+.text("Obese (%)");
+
+var SmokesLabel = labelsGroupY.append("text")
+.attr("transform", "rotate(-90)")
+.attr("x", 0)
+.attr("y", -150) 
+// .attr("dy", "1em")
+.attr("value", "smokes") // value to grab for event listener
+.classed("inactive", true)
+.text("Smokes (%)");
+
+var HealthcareLabel = labelsGroupY.append("text")
+.attr("transform", "rotate(-90)")
+.attr("x", 0)
+.attr("y", -130)
+// .attr("dy", "1em")
+.attr("value", "healthcare") // value to grab for event listener
+.classed("inactive", true)
+.text("Lacks Healthcare (%)");
+
   
