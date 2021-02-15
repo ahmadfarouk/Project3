@@ -1,18 +1,6 @@
 
 
-   ",
-        orientation: "v"
-    };
-    var plot_data = [trace1];
 
-    var layout ={
-        title: "Count of Titles by Countries Per Year",
-        barmode: "group",
-        //yaxis: {tickmode:"linear"}
-    };
-    Plotly.newPlot("bar", plot_data, layout)   
-    
-    
 
 /*    //the bubble chart
 
