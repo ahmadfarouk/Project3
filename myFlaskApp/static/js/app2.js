@@ -149,7 +149,7 @@ d3.json("/api/v1.0/budget_revenue_rating_country").then(function(Data){
         data.PG_Rating= data.PG_rating;
         data.Total_budget = +data.Total_budget;
         data.budget = +data.budget;
-        data.country_name = data.country_name;
+        // data.country_name = data.country_name;
        
 
       
