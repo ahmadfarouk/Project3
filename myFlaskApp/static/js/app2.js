@@ -192,4 +192,41 @@ var circlesGroup = chartGroup.selectAll("circle")
 // append initial circle labels
 //missing the first states in the list
 
+var circlesTextGroup= chartGroup.append("g")
+
+var circlesText = circlesTextGroup.selectAll("text")
+.data(Data)
+.enter()
+.append("text")
+.attr("x", d => xLinearScale(d[labelXaxis]))
+.attr("y", d => yLinearScale(d[labelYaxis]))
+// .attr("dy", "1em")
+.text(d => d.abbr)
+.classed("stateText", true);
+
+// Create group for  3 x-axis labels
+var labelsGroupX = chartGroup.append("g")
+.attr("transform", `translate(${width / 2}, ${height + 20})`);
+
+var BudgetLabel = labelsGroupX.append("text")
+.attr("x", 0)
+.attr("y", 20)
+.attr("value", "Budget") // value to grab for event listener
+.classed("active", true)
+.text("($)");
+
+var Revenuelabel = labelsGroupX.append("text")
+.attr("x", 0)
+.attr("y", 40)
+.attr("value", "Revenue") // value to grab for event listener
+.classed("inactive", true)
+.text("($)");
+
+var TotalBudgetabel = labelsGroupX.append("text")
+.attr("x", 0)
+.attr("y", 60)
+.attr("value", "Total budget") // value to grab for event listener
+.classed("inactive", true)
+.text("$");
+
   
