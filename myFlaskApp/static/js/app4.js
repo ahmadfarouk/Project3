@@ -26,6 +26,7 @@ var chartGroup = svg.append("g")
 // Initial Params
 var chosenYAxis = "TitleCount";
 var chosenXAxis = "DirectorsName";
+var DataSetNumber = 0;
 
 // function used for updating x-scale var upon click on axis label
 
@@ -126,9 +127,9 @@ d3.json("/api/v1.0/directors_count_revenue").then(function(DirectorsData, err) {
       d2.revenue = +d2.revenue
     });
 
-    var xLinearScale = xScale(DirectorsData, 0, chosenXAxis);
+    var xLinearScale = xScale(DirectorsData, DataSetNumber, chosenXAxis);
 
-    var yLinearScale = yScale(DirectorsData, 0, chosenYAxis);
+    var yLinearScale = yScale(DirectorsData, DataSetNumber, chosenYAxis);
 
     var bottomAxis = d3.axisBottom(xLinearScale);
     var leftAxis = d3.axisLeft(yLinearScale);
@@ -144,11 +145,17 @@ d3.json("/api/v1.0/directors_count_revenue").then(function(DirectorsData, err) {
     .call(leftAxis);
 
   var circlesGroup = chartGroup.selectAll("circle")
-    .data(DirectorsData[0])
+    .data(DirectorsData[DataSetNumber])
     .enter()
     .append("circle")
-    .attr("cx", function (d) {xLinearScale(d[chosenXAxis]), console.log(d[chosenXAxis])})
-    .attr("cy", function (d) {yLinearScale(d[chosenYAxis]), console.log(d[chosenYAxis])})
+    .attr("cx", function (d) {
+            xLinearScale(d[chosenXAxis]); 
+            //console.log(d[chosenXAxis])
+          })
+    .attr("cy", function (d) {
+            yLinearScale(d[chosenYAxis]); 
+            //console.log(d[chosenYAxis])
+          })
     .attr("r", 20)
     .attr("fill", "pink")
     .attr("opacity", ".5");
@@ -156,7 +163,29 @@ d3.json("/api/v1.0/directors_count_revenue").then(function(DirectorsData, err) {
   var labelsGroup = chartGroup.append("g")
     .attr("transform", `translate(${width / 2}, ${height + 20})`);
 
-  
+  var DirectorsNameLabel = labelsGroup.append("text")
+    .attr("x", 0)
+    .attr("y", 20)
+    .attr("value", "DirectorsName") // value to grab for event listener
+    .classed("active", true)
+    .text("Director Name");
+
+  var DirectorNameLabel = labelsGroup.append("text")
+    .attr("x", 0)
+    .attr("y", 40)
+    .attr("value", "TitleCount") // value to grab for event listener
+    .classed("inactive", true)
+    .text("Number of Titles");
+
+  chartGroup.append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("y", 0 - margin.left)
+    .attr("x", 0 - (height / 2))
+    .attr("dy", "1em")
+    .classed("axis-text", true)
+    .text("Number of Titles");
+
+    var circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
 
 }).catch(function(error) {
   console.log(error);
