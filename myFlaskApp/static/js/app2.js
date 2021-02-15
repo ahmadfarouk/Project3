@@ -2,24 +2,6 @@
 
 
 
-            //console.log(data)
-            var resultArray=data.metadata.filter(sampleObj => sampleObj.id==sample);
-            //console.log(resultArray)
-
-            // use .html("") to clear any existing Data
-            var panel = d3.select("#graph-metadata");
-            panel.html("");
-    
-            // Use object.entries to add Each key value pair to the panel
-    
-            Object.entries(resultArray[0]).forEach(([key, value]) =>{
-    
-            panel.append("h6").text(`${key}: ${value}`);
-            //console.log(key, value)
-    
-            // use d3 to append new tags for Each-Value in the MetaData
-            });
-            // Bonus: build gauge Chart 
             
             
         });
