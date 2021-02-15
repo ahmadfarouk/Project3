@@ -1,15 +1,4 @@
-function buildPlot(data, filter_value) { 
 
-    var panel = d3.select("#graph-metadata");
-    panel.html("");
-
-    panel.append("h6").text("The graph shows the number of titles produced by each country per release year");
-
-    var filtered_data=data.filter(d => d.release_year == filter_value)
-    //console.log (filtered_data)
-
-    x_axis = []
-    y_axis = []
 
     filtered_data.forEach ((d)=>
     {
