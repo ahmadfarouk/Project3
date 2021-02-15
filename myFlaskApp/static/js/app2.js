@@ -1,19 +1,6 @@
 
 
-    filtered_data.forEach ((d)=>
-    {
-        x_axis.push(d.country_name)
-        y_axis.push(d.Count_of_Titles)
-    });
-
-    //console.log (x_axis)
-    //console.log (y_axis)
-
-    var trace1 = {
-        x: x_axis,
-        y: y_axis,
-        text:"Count of Titles by Countries Per Year",
-        type: "bar",
+   ",
         orientation: "v"
     };
     var plot_data = [trace1];
