@@ -1,142 +1,401 @@
-function buildPlot(data, filter_value) { 
+// @TODO: YOUR CODE HERE!
 
-    var panel = d3.select("#graph-metadata");
-    panel.html("");
 
-    panel.append("h6").text("The graph shows the number of titles produced by each country per release year");
+var svgWidth = 1000;
+var svgHeight = 600;
+var margin = {
+  top: 20,
+  right: 40,
+  bottom: 80,
+  left: 100
+};
 
-    var filtered_data=data.filter(d => d.release_year == filter_value)
-    //console.log (filtered_data)
+// Define Dimensions of the Chart Area
+var width = svgWidth - margin.left - margin.right;
+var height = svgHeight - margin.top - margin.bottom;
 
-    x_axis = []
-    y_axis = []
+// Create an SVG wrapper, append an SVG group that will hold our chart,
+// and shift the latter by left and top margins.
+var svg = d3
+  .select("body")
+  .append("svg")
+  .attr("width", svgWidth)
+  .attr("height", svgHeight);
 
-    filtered_data.forEach ((d)=>
-    {
-        x_axis.push(d.country_name)
-        y_axis.push(d.Count_of_Titles)
+  // Append an SVG group
+  var chartGroup = svg.append("g")
+  .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+
+  // Parameters
+
+  var labelXaxis = "Budget";
+  var labelYaxis = "Revenue"
+
+// function used for updating X-Scale var upon click
+function xScale(data, labelXaxis) {
+    // create scales
+    var xLinearScale = d3.scaleLinear()
+    .domain([d3.min(data, d=> d[labelXaxis])*0.9,  d3.max(data, d => d[labelXaxis])*1.1])
+    .range([0, width]);
+    return xLinearScale;
+}
+ 
+  // function used for updating y-scale var upon click on axis label
+ function yScale(data, labelYaxis) {
+   // create scales
+   var yLinearScale = d3.scaleLinear()
+     .domain([d3.min(data, d => d[labelYaxis])*0.9, d3.max(data, d => d[labelYaxis])*1.1])
+     .range([height, 0]);
+ 
+    return yLinearScale; 
+}
+// function used for updating xAxis var upon click on axis label
+function renderAxesX(newXScale, xAxis) {
+  var bottomAxis = d3.axisBottom(newXScale);
+
+  xAxis.transition()
+    .duration(1000)
+    .call(bottomAxis);
+
+  return xAxis;
+}
+
+// function used for updating yAxis var upon click on axis label
+function renderAxesY(newYScale, yAxis) {
+    var leftAxis = d3.axisLeft(newYScale);
+  
+    yAxis.transition()
+      .duration(1000)
+      .call(leftAxis);
+  
+    return yAxis;
+}
+
+  // function used for updating circles group with a transition to
+// new circles
+function renderCircles(circlesGroup, newXScale, labelXaxis, newYScale, labelYaxis) {
+
+    circlesGroup.transition()
+      .duration(1000)
+      .attr("cx", d => newXScale(d[labelXaxis]))
+      .attr("cy", d => newYScale(d[labelYaxis]));
+  
+    return circlesGroup;
+}
+
+  function renderCirclesText(circlesText, newXScale, labelXaxis, newYScale, labelYaxis) {
+
+    circlesText.transition()
+      .duration(1000)
+      .attr("x", d => newXScale(d[labelXaxis]))
+      .attr("y", d => newYScale(d[labelYaxis]));
+  
+    return circlesText;
+}
+
+// function used for updating circles group with new tooltip
+function updateToolTip(labelXaxis, labelYaxis, circlesGroup) {
+
+    if (labelXaxis === "Budget") {
+      var labelX = "Budget: ";
+    }
+    else if (labelXaxis==="Total_budget"){
+      var labelY="Total_budget: ";
+  
+    }
+  
+      else if (labelXaxis==="budget"){
+        var labelY="budget: ";
+    }
+    if (labelYaxis==="Revenue"){
+      var labelY="Revenue: "
+    }
+    else if (labelYaxis==="PG_rating"){
+      var labelY="PG_rating: ";
+  
+    }
+    else if (labelYaxis==="country_name"){
+      var labelY="country_name: ";
+    } 
+  
+    var toolTip = d3.tip()
+    .attr("class", "d3-tip")
+    .offset([0, 0])
+    .html(function(d) {
+      return (`${d.state}<br>${labelX} ${d[labelXaxis]}<br>${labelY} ${d[labelYaxis]}`);
     });
 
-    //console.log (x_axis)
-    //console.log (y_axis)
+  circlesGroup.call(toolTip)
+    //mouseover event
+  circlesGroup.on("mouseover", function(data) {
+    toolTip.show(data, this);
+  })
+    // onmouseout event
+    .on("mouseout", function(data, index) {
+      toolTip.hide(data, this);
+    });
 
-    var trace1 = {
-        x: x_axis,
-        y: y_axis,
-        text:"Count of Titles by Countries Per Year",
-        type: "bar",
-        orientation: "v"
-    };
-    var plot_data = [trace1];
+  return circlesGroup;
+}
 
-    var layout ={
-        title: "Count of Titles by Countries Per Year",
-        barmode: "group",
-        //yaxis: {tickmode:"linear"}
-    };
-    Plotly.newPlot("bar", plot_data, layout)   
-    
-    
+//Retrieve data from the CSV file and execute everything below
+d3.json("/api/v1.0/budget_revenue_rating_country").then(function(Data){
+    Data.forEach(function(data) {
 
-/*    //the bubble chart
+      // Parser through the data and cast as numbers
+        data.Budget = +data.Budget;
+        data.Revenue = + data.Revenue;
+        data.PG_Rating= data.PG_rating;
+        data.Total_budget = +data.Total_budget;
+        data.budget = +data.budget;
+        // data.country_name = data.country_name;
+       
 
-    var trace2 ={
+      
+      
+     });
+    console.log(Data);
 
-        x: ids,
-        y: sampleValues,
-        text:labels,
-        mode: "markers",
-        marker: {
-            size: sampleValues,
-            color: ids,
-            colorscale: "Earth"          
-        },
-        
+
+
+    // xLinearScale and yLinearScale 
+// xLinearScale and yLinearScale function above csv import
+
+var xLinearScale = xScale(Data, labelXaxis);
+var yLinearScale= yScale(Data, labelYaxis)
+
+// Create initial axis functions
+var bottomAxis = d3.axisBottom(xLinearScale);
+var leftAxis = d3.axisLeft(yLinearScale);
+
+// append x axis
+var xAxis = chartGroup.append("g")
+  .attr("transform", `translate(0, ${height})`)
+  .call(bottomAxis);
+
+// append y axis
+var yAxis= chartGroup.append("g")
+  // .attr("transform", `translate(0, 0-${height})`)
+  .call(leftAxis);
+
+// append initial circles
+var circlesGroup = chartGroup.selectAll("circle")
+  .data(Data)
+  .enter()
+  .append("circle")
+  .attr("cx", d => xLinearScale(d[labelXaxis]))
+  .attr("cy", d => yLinearScale(d[labelXaxis]))
+  .attr("r", 20)
+  .classed("stateCircle", true);
+
+// append initial circle labels
+//missing the first states in the list
+
+var circlesTextGroup= chartGroup.append("g")
+
+var circlesText = circlesTextGroup.selectAll("text")
+.data(Data)
+.enter()
+.append("text")
+.attr("x", d => xLinearScale(d[labelXaxis]))
+.attr("y", d => yLinearScale(d[labelYaxis]))
+// .attr("dy", "1em")
+.text(d => d.abbr)
+.classed("stateText", true);
+
+// Create group for  3 x-axis labels
+var labelsGroupX = chartGroup.append("g")
+.attr("transform", `translate(${width / 2}, ${height + 20})`);
+
+var BudgetLabel = labelsGroupX.append("text")
+.attr("x", 0)
+.attr("y", 20)
+.attr("value", "Budget") // value to grab for event listener
+.classed("active", true)
+.text("($)");
+
+var Revenuelabel = labelsGroupX.append("text")
+.attr("x", 0)
+.attr("y", 40)
+.attr("value", "Revenue") // value to grab for event listener
+.classed("inactive", true)
+.text("($)");
+
+var TotalBudgetabel = labelsGroupX.append("text")
+.attr("x", 0)
+.attr("y", 60)
+.attr("value", "Total budget") // value to grab for event listener
+.classed("inactive", true)
+.text("$");
+
+// Create group for  3 y-axis labels
+var labelsGroupY = chartGroup.append("g")
+.attr("transform", `translate(${margin.left}, ${(height / 2)})`);
+
+var ObesityLabel = labelsGroupY.append("text")
+.attr("transform", "rotate(-90)")
+.attr("x", 0)
+.attr("y", -170)
+// .attr("dy", "1em")
+.attr("value", "obesity") // value to grab for event listener
+.classed("active", true)
+.text("Obese (%)");
+
+var SmokesLabel = labelsGroupY.append("text")
+.attr("transform", "rotate(-90)")
+.attr("x", 0)
+.attr("y", -150) 
+// .attr("dy", "1em")
+.attr("value", "smokes") // value to grab for event listener
+.classed("inactive", true)
+.text("Smokes (%)");
+
+var HealthcareLabel = labelsGroupY.append("text")
+.attr("transform", "rotate(-90)")
+.attr("x", 0)
+.attr("y", -130)
+// .attr("dy", "1em")
+.attr("value", "healthcare") // value to grab for event listener
+.classed("inactive", true)
+.text("Lacks Healthcare (%)");
+
+// updateToolTip function above csv import
+var circlesGroup = updateToolTip(labelXaxis, labelYaxis, circlesGroup);
+
+// x axis labels event listener
+labelsGroupX.selectAll("text")
+  .on("click", function() {
+    // get value of selection
+    var value = d3.select(this).attr("value");
+    if (value !== labelXaxis) {
+
+      // replaces chosenXAxis with value
+      labelXaxis = value;
+
+      // console.log(chosenXAxis)
+
+      // functions here found above csv import
+      // updates x scale for new data
+      xLinearScale = xScale(Data, labelXaxis);
+
+      // updates x axis with transition
+      xAxis = renderAxesX(xLinearScale, xAxis);
+
+      // updates circles with new x values
+      circlesGroup = renderCircles(circlesGroup, xLinearScale, labelXaxis, yLinearScale, labelYaxis);
+
+      //update circle text with new x values
+      circlesText = renderCirclesText(circlesText, xLinearScale, labelXaxis, yLinearScale, labelYaxis)
+      
+      // updates tooltips with new info
+      circlesGroup = updateToolTip(labelXaxis, labelYaxis, circlesGroup);
+
+      
+
+      // changes classes to change bold text for x axis
+      if (labelXaxis === "Budget") {
+        BudgetLabel
+          .classed("active", true)
+          .classed("inactive", false);
+        RevenueLabel
+          .classed("active", false)
+          .classed("inactive", true);
+        TotalbudgetLabel
+          .classed("active", false)
+          .classed("inactive", true);
+      }
+      else if (labelXaxis === "Revenue") {
+        BudgetLabel
+        .classed("active", true)
+        .classed("inactive", false);
+       RevenueLabel
+        .classed("active", false)
+        .classed("inactive", true);
+       TotalbudgetLabel
+        .classed("active", false)
+        .classed("inactive", true);
+      }
+      else if (labelXaxis === "Total_budget") {
+        BudgetLabel
+        .classed("active", true)
+        .classed("inactive", false);
+        RevenueLabel
+        .classed("active", false)
+        .classed("inactive", true);
+        TotalbudgetLabel
+        .classed("active", false)
+        .classed("inactive", true);
+      }
     }
-    var data2 =[trace2]
+  });
 
-    var layout2 = {
-        xaxis:{title: "OTU ID"},
-        showlegend: true,
-        height: 600,
-        width: 1000
 
-    };
-    Plotly.newPlot("bubble", data2, layout2) */
-//})
-    // Bonus: build gauge Chart 
-   
-}
 
-var mainForm = d3.select("#selDataset");
-mainForm.on("change", formChange)
+// y axis labels event listener
+labelsGroupY.selectAll("text")
+  .on("click", function() {
+    // get value of selection
+    var value = d3.select(this).attr("value");
+    if (value !== labelYaxis) {
 
-function formChange () {
-  d3.event.preventDefault ();
-  var SelectMenu = d3.select(".svg-container");
-  SelectMenu.html("");
+      // replaces chosenYAxis with value
+      labelYaxis= value;
 
-  enter_otu_id = d3.select("#selDataset")
-  filter_date_value = enter_otu_id.property("value");
-  console.log(filter_date_value)
-
-  d3.json("/api/v1.0/titles_country").then((data) => {buildPlot(data, filter_date_value);})
-}
-
-function readData(sample){
-
-    // Use `d3.json` to Fetch the Metadata for a Sample
-        d3.json("samples.json").then(function(data) {
+      // functions here found above csv import
+      // updates y scale for new data
+      yLinearScale = yScale(Data, labelYaxis);
     
-            //console.log(data)
-            var resultArray=data.metadata.filter(sampleObj => sampleObj.id==sample);
-            //console.log(resultArray)
+      // updates y axis with transition
+      yAxis = renderAxesY(yLinearScale, yAxis);
 
-            // use .html("") to clear any existing Data
-            var panel = d3.select("#graph-metadata");
-            panel.html("");
-    
-            // Use object.entries to add Each key value pair to the panel
-    
-            Object.entries(resultArray[0]).forEach(([key, value]) =>{
-    
-            panel.append("h6").text(`${key}: ${value}`);
-            //console.log(key, value)
-    
-            // use d3 to append new tags for Each-Value in the MetaData
-            });
-            // Bonus: build gauge Chart 
-            
-            
-        });
-    };
-    //readData();
-    
-function init() {
-    drop_down=d3.select('#selDataset');
+      // updates circles with new y values
+      circlesGroup = renderCircles(circlesGroup, xLinearScale, labelXaxis, yLinearScale, labelYaxis);
 
-    d3.json("/api/v1.0/titles_country").then((data) => {
-        //loop through ids_selection and append option to drop_down
-        data.forEach((item)=>
-        {
-            drop_down.append('option').text(item.release_year).property("value", item.release_year);
-        });
+      //update circle text with new y values
+      circlesText = renderCirclesText(circlesText, xLinearScale, labelXaxis, yLinearScale, labelYaxis)
+      
+      // updates tooltips with new info
+      circlesGroup = updateToolTip(labelXaxis, labelYaxis, circlesGroup);
 
-        //grab the first sample and build the charts on the page for page load
-        firstRelease_year=data[0].release_year
-        //console.log(firstCountry)
-        buildPlot(data, firstRelease_year);
-        // readData(firstSample);
-        // buildGauge(firstSample);
-    })
-}
+      
 
-/*function optionChanged (newSample){
-    //Fetch New Data Each time a New sample is selcted
-    buildPlot(newSample);
-    readData(newSample);
-    buildGauge(newSample);
-}*/
+      // changes classes to change bold text for x axis
+      if (labelYaxis === "obesity") {
+        ObesityLabel
+          .classed("active", true)
+          .classed("inactive", false);
+        SmokesLabel
+          .classed("active", false)
+          .classed("inactive", true);
+        HealthcareLabel
+          .classed("active", false)
+          .classed("inactive", true);
+      }
+      else if (labelYaxis  === "smokes") {
+        ObesityLabel
+          .classed("active", false)
+          .classed("inactive", true);
+        SmokesLabel
+          .classed("active", true)
+          .classed("inactive", false);
+        HealthcareLabel
+          .classed("active", false)
+          .classed("inactive", true);
+      }
+      else if (labelYaxis  === "healthcare") {
+        ObesityLabel
+          .classed("active", false)
+          .classed("inactive", true);
+        SmokesLabel
+          .classed("active", false)
+          .classed("inactive", true);
+        HealthcareLabel
+          .classed("active", true)
+          .classed("inactive", false);
+      }
+    }
+  });
 
-//call init for page load
-init();
+
+});
