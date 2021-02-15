@@ -1,142 +1,120 @@
-function buildPlot(data, filter_value) { 
+var svgWidth = window.width;
+var svgHeight = window.height;
 
-    var panel = d3.select("#graph-metadata");
-    panel.html("");
+var margin = {
+  top: 20,
+  right: 30,
+  bottom: 20,
+  left: 30
+};
 
-    panel.append("h6").text("The graph shows the number of titles produced by each country per release year");
+var width = svgWidth - margin.left - margin.right;
+var height = svgHeight - margin.top - margin.bottom;
 
-    var filtered_data=data.filter(d => d.release_year == filter_value)
-    //console.log (filtered_data)
+// Create an SVG wrapper, append an SVG group that will hold our chart,
+// and shift the latter by left and top margins.
+var svg = d3
+  .select(".chart")
+  .append("svg")
+  .attr("width", svgWidth)
+  .attr("height", svgHeight);
 
-    x_axis = []
-    y_axis = []
+// Append an SVG group
+var chartGroup = svg.append("g")
+  .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
-    filtered_data.forEach ((d)=>
-    {
-        x_axis.push(d.country_name)
-        y_axis.push(d.Count_of_Titles)
+// Initial Params
+var chosenYAxis = "DirectorCount";
+var chosenXAxis = "Directors";
+
+// function used for updating x-scale var upon click on axis label
+function xScale(DirectorData, chosenXAxis) {
+  // create scales
+  
+  var xLinearScale = d3.scaleLinear()
+    .domain([d3.min(DirectorData, d => d[chosenXAxis]) * 0.8,
+      d3.max(DirectorData, d => d[chosenXAxis]) * 1.2
+    ])
+    .range([0, width]);
+
+  return xLinearScale;
+
+}
+
+// function used for updating xAxis var upon click on axis label
+function renderAxes(newXScale, xAxis) {
+  var bottomAxis = d3.axisBottom(newXScale);
+
+  xAxis.transition()
+    .duration(1000)
+    .call(bottomAxis);
+
+  return xAxis;
+}
+
+// function used for updating circles group with a transition to
+// new circles
+function renderCircles(circlesGroup, newXScale, chosenXAxis) {
+
+  circlesGroup.transition()
+    .duration(1000)
+    .attr("cx", d => newXScale(d[chosenXAxis]));
+
+  return circlesGroup;
+}
+
+// function used for updating circles group with new tooltip
+function updateToolTip(chosenXAxis, circlesGroup) {
+
+  var label;
+
+  if (chosenXAxis === "hair_length") {
+    label = "Hair Length:";
+  }
+  else {
+    label = "# of Albums:";
+  }
+
+  var toolTip = d3.tip()
+    .attr("class", "tooltip")
+    .offset([80, -60])
+    .html(function(d) {
+      return (`${d.rockband}<br>${label} ${d[chosenXAxis]}`);
     });
 
-    //console.log (x_axis)
-    //console.log (y_axis)
+  circlesGroup.call(toolTip);
 
-    var trace1 = {
-        x: x_axis,
-        y: y_axis,
-        text:"Count of Titles by Countries Per Year",
-        type: "bar",
-        orientation: "v"
-    };
-    var plot_data = [trace1];
+  circlesGroup.on("mouseover", function(data) {
+    toolTip.show(data);
+  })
+    // onmouseout event
+    .on("mouseout", function(data, index) {
+      toolTip.hide(data);
+    });
 
-    var layout ={
-        title: "Count of Titles by Countries Per Year",
-        barmode: "group",
-        //yaxis: {tickmode:"linear"}
-    };
-    Plotly.newPlot("bar", plot_data, layout)   
-    
-    
-
-/*    //the bubble chart
-
-    var trace2 ={
-
-        x: ids,
-        y: sampleValues,
-        text:labels,
-        mode: "markers",
-        marker: {
-            size: sampleValues,
-            color: ids,
-            colorscale: "Earth"          
-        },
-        
-    }
-    var data2 =[trace2]
-
-    var layout2 = {
-        xaxis:{title: "OTU ID"},
-        showlegend: true,
-        height: 600,
-        width: 1000
-
-    };
-    Plotly.newPlot("bubble", data2, layout2) */
-//})
-    // Bonus: build gauge Chart 
-   
+  return circlesGroup;
 }
 
-var mainForm = d3.select("#selDataset");
-mainForm.on("change", formChange)
+var parseTime = d3.timeParse("%Y")
 
-function formChange () {
-  d3.event.preventDefault ();
-  var SelectMenu = d3.select(".svg-container");
-  SelectMenu.html("");
+// Retrieve data from the CSV file and execute everything below
+d3.json("/api/v1.0/directors_count_revenue").then(function(DirectorsData, err) {
+  if (err) throw err;
 
-  enter_otu_id = d3.select("#selDataset")
-  filter_date_value = enter_otu_id.property("value");
-  console.log(filter_date_value)
+  DirectorsData[0].forEach(function(d1) {
+      d1.DirectorsName = d1.DirectorsName;
+      d1.ReleaseYear = parseTime(d1.ReleaseYear)
+      d1.TitleCount = +d1.TitleCount
+      console.log(d1)
+    });
 
-  d3.json("/api/v1.0/titles_country").then((data) => {buildPlot(data, filter_date_value);})
-}
+  DirectorsData[1].forEach(function(d2) {
+      d2.director_name = d2.director_name;
+      d2.release_year = parseTime(d2.release_year)
+      d2.revenue = +d2.revenue
+      console.log(d2)
+    });
 
-function readData(sample){
-
-    // Use `d3.json` to Fetch the Metadata for a Sample
-        d3.json("samples.json").then(function(data) {
-    
-            //console.log(data)
-            var resultArray=data.metadata.filter(sampleObj => sampleObj.id==sample);
-            //console.log(resultArray)
-
-            // use .html("") to clear any existing Data
-            var panel = d3.select("#graph-metadata");
-            panel.html("");
-    
-            // Use object.entries to add Each key value pair to the panel
-    
-            Object.entries(resultArray[0]).forEach(([key, value]) =>{
-    
-            panel.append("h6").text(`${key}: ${value}`);
-            //console.log(key, value)
-    
-            // use d3 to append new tags for Each-Value in the MetaData
-            });
-            // Bonus: build gauge Chart 
-            
-            
-        });
-    };
-    //readData();
-    
-function init() {
-    drop_down=d3.select('#selDataset');
-
-    d3.json("/api/v1.0/titles_country").then((data) => {
-        //loop through ids_selection and append option to drop_down
-        data.forEach((item)=>
-        {
-            drop_down.append('option').text(item.release_year).property("value", item.release_year);
-        });
-
-        //grab the first sample and build the charts on the page for page load
-        firstRelease_year=data[0].release_year
-        //console.log(firstCountry)
-        buildPlot(data, firstRelease_year);
-        // readData(firstSample);
-        // buildGauge(firstSample);
-    })
-}
-
-/*function optionChanged (newSample){
-    //Fetch New Data Each time a New sample is selcted
-    buildPlot(newSample);
-    readData(newSample);
-    buildGauge(newSample);
-}*/
-
-//call init for page load
-init();
+}).catch(function(error) {
+  console.log(error);
+});
