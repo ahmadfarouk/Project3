@@ -139,4 +139,57 @@ function updateToolTip(labelXaxis, labelYaxis, circlesGroup) {
   return circlesGroup;
 }
 
+//Retrieve data from the CSV file and execute everything below
+d3.json("/api/v1.0/budget_revenue_rating_country").then(function(Data){
+    Data.forEach(function(data) {
+
+      // Parser through the data and cast as numbers
+        data.Budget = +data.Budget;
+        data.Revenue = + data.Revenue;
+        data.PG_Rating= data.PG_rating;
+        data.Total_budget = +data.Total_budget;
+        data.budget = +data.budget;
+        data.country_name = data.country_name;
+       
+
+      
+      
+     });
+    console.log(Data);
+
+
+
+    // xLinearScale and yLinearScale 
+// xLinearScale and yLinearScale function above csv import
+
+var xLinearScale = xScale(Data, labelXaxis);
+var yLinearScale= yScale(Data, labelYaxis)
+
+// Create initial axis functions
+var bottomAxis = d3.axisBottom(xLinearScale);
+var leftAxis = d3.axisLeft(yLinearScale);
+
+// append x axis
+var xAxis = chartGroup.append("g")
+  .attr("transform", `translate(0, ${height})`)
+  .call(bottomAxis);
+
+// append y axis
+var yAxis= chartGroup.append("g")
+  // .attr("transform", `translate(0, 0-${height})`)
+  .call(leftAxis);
+
+// append initial circles
+var circlesGroup = chartGroup.selectAll("circle")
+  .data(Data)
+  .enter()
+  .append("circle")
+  .attr("cx", d => xLinearScale(d[labelXaxis]))
+  .attr("cy", d => yLinearScale(d[labelXaxis]))
+  .attr("r", 20)
+  .classed("stateCircle", true);
+
+// append initial circle labels
+//missing the first states in the list
+
   
