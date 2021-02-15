@@ -1,25 +1,7 @@
 
 
 
-
-    }
-    var data2 =[trace2]
-
-    var layout2 = {
-        xaxis:{title: "OTU ID"},
-        showlegend: true,
-        height: 600,
-        width: 1000
-
-    };
-    Plotly.newPlot("bubble", data2, layout2) */
-//})
-    // Bonus: build gauge Chart 
-   
-}
-
-var mainForm = d3.select("#selDataset");
-mainForm.on("change", formChange)
+nge)
 
 function formChange () {
   d3.event.preventDefault ();
