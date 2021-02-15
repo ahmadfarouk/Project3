@@ -1,25 +1,7 @@
 
 
 
-nge)
 
-function formChange () {
-  d3.event.preventDefault ();
-  var SelectMenu = d3.select(".svg-container");
-  SelectMenu.html("");
-
-  enter_otu_id = d3.select("#selDataset")
-  filter_date_value = enter_otu_id.property("value");
-  console.log(filter_date_value)
-
-  d3.json("/api/v1.0/titles_country").then((data) => {buildPlot(data, filter_date_value);})
-}
-
-function readData(sample){
-
-    // Use `d3.json` to Fetch the Metadata for a Sample
-        d3.json("samples.json").then(function(data) {
-    
             //console.log(data)
             var resultArray=data.metadata.filter(sampleObj => sampleObj.id==sample);
             //console.log(resultArray)
