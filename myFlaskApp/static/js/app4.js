@@ -3,9 +3,9 @@ var svgHeight = 500;
 
 var margin = {
   top: 20,
-  right: 30,
-  bottom: 20,
-  left: 30
+  right: 40,
+  bottom: 80,
+  left: 100
 };
 
 var width = svgWidth - margin.left - margin.right;
@@ -24,34 +24,21 @@ var chartGroup = svg.append("g")
   .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
 // Initial Params
-var chosenYAxis = "TitleCount";
-var chosenXAxis = "DirectorsName";
-var DataSetNumber = 0;
+var chosenXAxis = "TitleCount";
+var chosenXAxis = "director_name";
+var factor = 100000000
 
 // function used for updating x-scale var upon click on axis label
-
-function xScale(DirectorData, x_index, chosenXAxis) {
+function xScale(DirectorData,chosenXAxis) {
   // create scales
   var xLinearScale = d3.scaleLinear()
-  .domain([0,DirectorData[x_index].length * 1.2])
-  .range([0, width]);
-  console.log (DirectorData[x_index].length * 1.2)
-  return xLinearScale;
-}
-
-function yScale(DirectorData, y_index, chosenYAxis) {
-  // create scales
-  var factor = 10000
-  if (chosenYAxis != "DirectorsName") {factor = 1}
-
-  var yLinearScale = d3.scaleLinear()
-    .domain([d3.min(Math.round(DirectorData[y_index], d => d[chosenYAxis]) * 0.8),
-      Math.round(d3.max(DirectorData[y_index], d => d[chosenYAxis]) * 1.2 / factor)
+    .domain([d3.min(DirectorData, d => d[chosenXAxis]) * 0.8,
+      d3.max(DirectorData, d => d[chosenXAxis]) * 1.2
     ])
-    .range([height, 0]);
-  
-  console.log(Math.round(d3.max(DirectorData[y_index], d => d[chosenYAxis]) * 1.2 / factor))
-  return yLinearScale;
+    .range([0, width]);
+
+  return xLinearScale;
+
 }
 
 // function used for updating xAxis var upon click on axis label
@@ -81,18 +68,18 @@ function updateToolTip(chosenXAxis, circlesGroup) {
 
   var label;
 
-  if (chosenXAxis === "hair_length") {
-    label = "Hair Length:";
+  if (chosenXAxis == "TitleCount") {
+    label = "Number of Titles:";
   }
   else {
-    label = "# of Albums:";
+    label = "Revenue:";
   }
 
   var toolTip = d3.tip()
     .attr("class", "tooltip")
     .offset([80, -60])
     .html(function(d) {
-      return (`${d.rockband}<br>${label} ${d[chosenXAxis]}`);
+      return (`${d.Director_Name}<br>${label} ${d[chosenXAxis]}`);
     });
 
   circlesGroup.call(toolTip);
@@ -101,7 +88,7 @@ function updateToolTip(chosenXAxis, circlesGroup) {
     toolTip.show(data);
   })
     // onmouseout event
-    .on("mouseout", function(data, index) {
+    .on("mouseout", function(data) {
       toolTip.hide(data);
     });
 
@@ -111,82 +98,147 @@ function updateToolTip(chosenXAxis, circlesGroup) {
 var parseTime = d3.timeParse("%Y")
 
 // Retrieve data from the CSV file and execute everything below
-d3.json("/api/v1.0/directors_count_revenue").then(function(DirectorsData, err) {
-  if (err) throw err;
+function BuildBlot (filterYear) {
+    data = d3.json("/api/v1.0/directors_count_revenue").then(function(AllDirectorData, err) {
+        if (err) throw err;
+      
+        // parse data
+        drop_down=d3.select('#selDataset');
+      
+        AllDirectorData.forEach(function(data) {
+          data.Director_Name = data.Director_Name;
+          data.ReleaseYear = data.ReleaseYear;
+          data.TitleCount = +data.TitleCount;
+          data.Revenue = +data.Revenue;
+         });
+      
+         var DirectorData=AllDirectorData.filter(d => d.ReleaseYear == filterYear)
+      
+        // xLinearScale function above csv import
+        var xLinearScale = xScale(DirectorData, chosenXAxis);
+      
+        // Create y scale function
+        var yLinearScale = d3.scaleLinear()
+          .domain([0, d3.max(DirectorData, (d,i) => i)])
+          .range([height, 0]);
+      
+        // Create initial axis functions
+        var bottomAxis = d3.axisBottom(xLinearScale);
+        var leftAxis = d3.axisLeft(yLinearScale);
+      
+        // append x axis
+        var xAxis = chartGroup.append("g")
+          .classed("x-axis", true)
+          .attr("transform", `translate(0, ${height})`)
+          .call(bottomAxis);
+      
+        // append y axis
+        chartGroup.append("g")
+          .call(leftAxis);
+      
+        // append initial circles
+        var circlesGroup = chartGroup.selectAll("circle")
+          .data(DirectorData)
+          .enter()
+          .append("circle")
+          .attr("cx", function (d) {xLinearScale(d[chosenXAxis])})
+          .attr("cy", (d,i) => yLinearScale(i))
+          .attr("r", 2)
+          .attr("fill", "red")
+      
+        // Create group for two x-axis labels
+        var labelsGroup = chartGroup.append("g")
+          .attr("transform", `translate(${width / 2}, ${height + 20})`);
+      
+        var TitCntLabel = labelsGroup.append("text")
+          .attr("x", 0)
+          .attr("y", 20)
+          .attr("value", "TitleCount") // value to grab for event listener
+          .classed("active", true)
+          .text("Number of titles");
+      
+        var RevLabel = labelsGroup.append("text")
+          .attr("x", 0)
+          .attr("y", 40)
+          .attr("value", "Revenue") // value to grab for event listener
+          .classed("inactive", true)
+          .text("Revenue");
+      
+        // append y axis
+        chartGroup.append("text")
+          .attr("transform", "rotate(-90)")
+          .attr("y", 0 - margin.left)
+          .attr("x", 0 - (height / 2))
+          .attr("dy", "1em")
+          .classed("axis-text", true)
+          .text("Director Name");
+      
+        // updateToolTip function above csv import
+        var circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
+      
+        console.log (DirectorData);
+      
+        // x axis labels event listener
+        labelsGroup.selectAll("text")
+          .on("click", function() {
+            // get value of selection
+            var value = d3.select(this).attr("value");
+            if (value !== chosenXAxis) {
+      
+              // replaces chosenXAxis with value
+              chosenXAxis = value;
+      
+              // console.log(chosenXAxis)
+      
+              // functions here found above csv import
+              // updates x scale for new data
+              xLinearScale = xScale(DirectorData, chosenXAxis);
+      
+              // updates x axis with transition
+              xAxis = renderAxes(xLinearScale, xAxis);
+      
+              // updates circles with new x values
+              circlesGroup = renderCircles(circlesGroup, xLinearScale, chosenXAxis);
+      
+              // updates tooltips with new info
+              circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
+      
+              // changes classes to change bold text
+              if (chosenXAxis === "Revenue") {
+                RevLabel
+                  .classed("active", true)
+                  .classed("inactive", false);
+                TitCntLabel
+                  .classed("active", false)
+                  .classed("inactive", true);
+              }
+              else {
+                  RevLabel
+                  .classed("active", false)
+                  .classed("inactive", true);
+                  TitCntLabel
+                  .classed("active", true)
+                  .classed("inactive", false);
+              }
+            }
+          });
+      }).catch(function(error) {
+        console.log(error);
+      });     
+}
 
-  DirectorsData[0].forEach(function(d1) {
-      d1.DirectorsName = d1.DirectorsName;
-      d1.ReleaseYear = parseTime(d1.ReleaseYear)
-      d1.TitleCount = +d1.TitleCount
-      console.log(d1.TitleCount)
-    });
+function init ()
+ {
+    drop_down=d3.select('#selDataset');
+    d3.json("/api/v1.0/directors_count_revenue").then((data) => {
+        data.forEach((item)=>
+        {
+            drop_down.append('option').text(item.ReleaseYear).property("value", item.ReleaseYear);
+        });
 
-  DirectorsData[1].forEach(function(d2) {
-      d2.director_name = d2.director_name;
-      d2.release_year = parseTime(d2.release_year)
-      d2.revenue = +d2.revenue
-    });
+        firstPlayer_name=data[0].ReleaseYear
+        BuildBlot(firstPlayer_name);
+    })
+ }
 
-    var xLinearScale = xScale(DirectorsData, DataSetNumber, chosenXAxis);
-
-    var yLinearScale = yScale(DirectorsData, DataSetNumber, chosenYAxis);
-
-    var bottomAxis = d3.axisBottom(xLinearScale);
-    var leftAxis = d3.axisLeft(yLinearScale);
-
-  // append x axis
-  var xAxis = chartGroup.append("g")
-    .classed("x-axis", true)
-    .attr("transform", `translate(0, ${height})`)
-    .call(bottomAxis);
-
-  // append y axis
-  chartGroup.append("g")
-    .call(leftAxis);
-
-  var circlesGroup = chartGroup.selectAll("circle")
-    .data(DirectorsData[DataSetNumber])
-    .enter()
-    .append("circle")
-    .attr("cx", function (d) {
-            xLinearScale(d[chosenXAxis]); 
-            //console.log(d[chosenXAxis])
-          })
-    .attr("cy", function (d) {
-            yLinearScale(d[chosenYAxis]); 
-            //console.log(d[chosenYAxis])
-          })
-    .attr("r", 20)
-    .attr("fill", "pink")
-    .attr("opacity", ".5");
-
-  var labelsGroup = chartGroup.append("g")
-    .attr("transform", `translate(${width / 2}, ${height + 20})`);
-
-  var DirectorsNameLabel = labelsGroup.append("text")
-    .attr("x", 0)
-    .attr("y", 20)
-    .attr("value", "DirectorsName") // value to grab for event listener
-    .classed("active", true)
-    .text("Director Name");
-
-  var DirectorNameLabel = labelsGroup.append("text")
-    .attr("x", 0)
-    .attr("y", 40)
-    .attr("value", "TitleCount") // value to grab for event listener
-    .classed("inactive", true)
-    .text("Number of Titles");
-
-  chartGroup.append("text")
-    .attr("transform", "rotate(-90)")
-    .attr("y", 0 - margin.left)
-    .attr("x", 0 - (height / 2))
-    .attr("dy", "1em")
-    .classed("axis-text", true)
-    .text("Number of Titles");
-
-    var circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
-
-}).catch(function(error) {
-  console.log(error);
-});
+ init ()

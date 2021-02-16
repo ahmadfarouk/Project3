@@ -189,33 +189,36 @@ def directors_count_revenue():
     directors_count_revenue = []
     directors_titlecount_all= []
     directors_revenue_all= []
-    directors_revenue = session.query (director.director_name, title.release_year, func.sum(title.revenue))\
+    directors_revenue = session.query (director.director_name, title.release_year, func.sum(title.revenue), func.count(title.show_id))\
         .filter(director.director_id == director_title.director_id,)\
         .filter(title.show_id == director_title.show_id)\
         .filter(title.revenue != 0)\
         .group_by(director.director_name, title.release_year)\
-        .limit(200).all()
-    directors_titlecount = session.query (director.director_name, title.release_year, func.count(title.show_id))\
-        .filter(director.director_id == director_title.director_id,)\
-        .filter(title.show_id == director_title.show_id)\
-        .group_by(director.director_name, title.release_year)\
         .order_by(desc(func.count(title.show_id)))\
-        .limit(200).all()
-    for result in directors_titlecount:
-        row = {}
-        row["DirectorsName"] = result[0]
-        row["ReleaseYear"] = result[1]
-        row["TitleCount"] = result[2]
-        directors_titlecount_all.append(row)
+        .limit(200)\
+        .all()
+    # directors_titlecount = session.query (director.director_name, title.release_year)\
+    #     .filter(director.director_id == director_title.director_id,)\
+    #     .filter(title.show_id == director_title.show_id)\
+    #     .group_by(director.director_name, title.release_year)\
+    #     .order_by(desc(func.count(title.show_id)))\
+    #     .all()
+    # for result in directors_titlecount:
+    #     row = {}
+    #     row["Director_Name"] = result[0]
+    #     row["ReleaseYear"] = result[1]
+    #     row["TitleCount"] = result[2]
+    #     directors_titlecount_all.append(row)
     for result in directors_revenue:
         row = {}
-        row["director_name"] = result[0]
-        row["release_year"] = result[1]
-        row["revenue"] = result[2]
+        row["Director_Name"] = result[0]
+        row["ReleaseYear"] = result[1]
+        row["Revenue"] = result[2]
+        row["TitleCount"] = result[3]        
         directors_revenue_all.append(row)
-    directors_count_revenue.append(directors_titlecount_all)
+    #directors_count_revenue.append(directors_titlecount_all)
     directors_count_revenue.append(directors_revenue_all)
-    return jsonify (directors_count_revenue)
+    return jsonify (directors_revenue_all)
 
 ####display All data
 @app.route("/index4")
