@@ -13,7 +13,14 @@ var height = svgHeight - margin.top - margin.bottom;
 
 // Create an SVG wrapper, append an SVG group that will hold our chart,
 // and shift the latter by left and top margins.
-var svg = d3
+
+function onlyUnique(value, index, self) {
+    return self.indexOf(value) === index;
+  }  
+
+function init_svg ()
+{
+   var svg = d3
   .select("#bar")
   .append("svg")
   .attr("width", svgWidth)
@@ -22,6 +29,8 @@ var svg = d3
 // Append an SVG group
 var chartGroup = svg.append("g")
   .attr("transform", `translate(${margin.left}, ${margin.top})`);
+return chartGroup
+}
 
 // Initial Params
 var chosenXAxis = "TitleCount";
@@ -98,12 +107,19 @@ function updateToolTip(chosenXAxis, circlesGroup) {
 var parseTime = d3.timeParse("%Y")
 
 // Retrieve data from the CSV file and execute everything below
-function BuildBlot (filterYear) {
+function buildPlot (filterYear) {
+    
+    var chartGroup = init_svg ()
+
     data = d3.json("/api/v1.0/directors_count_revenue").then(function(AllDirectorData, err) {
         if (err) throw err;
       
+        var panel = d3.select("#graph-metadata");
+        panel.html("");
+    
+        panel.append("h6").text("The graph shows the Number of titles per director and revenue each year.");
+
         // parse data
-        drop_down=d3.select('#selDataset');
       
         AllDirectorData.forEach(function(data) {
           data.Director_Name = data.Director_Name;
@@ -227,17 +243,45 @@ function BuildBlot (filterYear) {
       });     
 }
 
+var mainForm = d3.select("#selDataset");
+mainForm.on("change", formChange)
+
+function formChange () {
+  d3.event.preventDefault ();
+
+  var SelectDrawingArea = d3.select("#bar");
+  SelectDrawingArea.html("");
+
+  enter_otu_id = d3.select("#selDataset")
+  filter_date_value = enter_otu_id.property("value");
+//   console.log(filter_date_value)
+
+  buildPlot(filter_date_value);
+}
+
 function init ()
  {
+
     drop_down=d3.select('#selDataset');
+    menu_list = [] ;
+
     d3.json("/api/v1.0/directors_count_revenue").then((data) => {
+        
         data.forEach((item)=>
         {
-            drop_down.append('option').text(item.ReleaseYear).property("value", item.ReleaseYear);
+            menu_list.push (item.ReleaseYear)
         });
 
+        menu_list = menu_list.filter(onlyUnique);
+        menu_list.sort(function(a, b) {
+            return b - a;
+          })
+        menu_list.forEach((item) => {
+            drop_down.append('option').text(item).property("value", item);
+        })
+        
         firstPlayer_name=data[0].ReleaseYear
-        BuildBlot(firstPlayer_name);
+        buildPlot(firstPlayer_name);
     })
  }
 

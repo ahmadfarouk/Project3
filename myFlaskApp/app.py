@@ -192,10 +192,8 @@ def directors_count_revenue():
     directors_revenue = session.query (director.director_name, title.release_year, func.sum(title.revenue), func.count(title.show_id))\
         .filter(director.director_id == director_title.director_id,)\
         .filter(title.show_id == director_title.show_id)\
-        .filter(title.revenue != 0)\
-        .group_by(director.director_name, title.release_year)\
+        .group_by(title.release_year, director.director_name)\
         .order_by(desc(func.count(title.show_id)))\
-        .limit(200)\
         .all()
     # directors_titlecount = session.query (director.director_name, title.release_year)\
     #     .filter(director.director_id == director_title.director_id,)\
