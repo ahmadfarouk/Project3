@@ -7,27 +7,7 @@
 
 
   
-      var labelX = "Budget: ";
-    }
-    else if (labelXaxis==="Total_budget"){
-      var labelY="Total_budget: ";
-  
-    }
-  
-      else if (labelXaxis==="budget"){
-        var labelY="budget: ";
-    }
-    if (labelYaxis==="Revenue"){
-      var labelY="Revenue: "
-    }
-    else if (labelYaxis==="PG_rating"){
-      var labelY="PG_rating: ";
-  
-    }
-    else if (labelYaxis==="country_name"){
-      var labelY="country_name: ";
-    } 
-  
+    
     var toolTip = d3.tip()
     .attr("class", "d3-tip")
     .offset([0, 0])
