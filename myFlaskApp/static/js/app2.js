@@ -10,24 +10,6 @@
     
     
 
-//Retrieve data from the CSV file and execute everything below
-d3.json("/api/v1.0/budget_revenue_rating_country").then(function(Data){
-    Data.forEach(function(data) {
-
-      // Parser through the data and cast as numbers
-        data.Budget = +data.Budget;
-        data.Revenue = + data.Revenue;
-        data.PG_Rating= data.PG_rating;
-        data.Total_budget = +data.Total_budget;
-        data.budget = +data.budget;
-        // data.country_name = data.country_name;
-       
-
-      
-      
-     });
-    console.log(Data);
-
 
 
     // xLinearScale and yLinearScale 
