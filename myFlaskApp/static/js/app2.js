@@ -8,25 +8,7 @@
 
   
     
-    var toolTip = d3.tip()
-    .attr("class", "d3-tip")
-    .offset([0, 0])
-    .html(function(d) {
-      return (`${d.state}<br>${labelX} ${d[labelXaxis]}<br>${labelY} ${d[labelYaxis]}`);
-    });
-
-  circlesGroup.call(toolTip)
-    //mouseover event
-  circlesGroup.on("mouseover", function(data) {
-    toolTip.show(data, this);
-  })
-    // onmouseout event
-    .on("mouseout", function(data, index) {
-      toolTip.hide(data, this);
-    });
-
-  return circlesGroup;
-}
+    
 
 //Retrieve data from the CSV file and execute everything below
 d3.json("/api/v1.0/budget_revenue_rating_country").then(function(Data){
