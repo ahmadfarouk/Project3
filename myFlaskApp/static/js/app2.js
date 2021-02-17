@@ -6,20 +6,7 @@
   
 
 
-  function renderCirclesText(circlesText, newXScale, labelXaxis, newYScale, labelYaxis) {
-
-    circlesText.transition()
-      .duration(1000)
-      .attr("x", d => newXScale(d[labelXaxis]))
-      .attr("y", d => newYScale(d[labelYaxis]));
   
-    return circlesText;
-}
-
-// function used for updating circles group with new tooltip
-function updateToolTip(labelXaxis, labelYaxis, circlesGroup) {
-
-    if (labelXaxis === "Budget") {
       var labelX = "Budget: ";
     }
     else if (labelXaxis==="Total_budget"){
