@@ -5,33 +5,6 @@
   
   
 
-
-  
-    
-    
-
-
-
- 
-// append initial circles
-var circlesGroup = chartGroup.selectAll("circle")
-  .data(Data)
-  .enter()
-  .append("circle")
-  .attr("cx", d => xLinearScale(d[labelXaxis]))
-  .attr("cy", d => yLinearScale(d[labelXaxis]))
-  .attr("r", 20)
-  .classed("stateCircle", true);
-
-// append initial circle labels
-//missing the first states in the list
-
-var circlesTextGroup= chartGroup.append("g")
-
-var circlesText = circlesTextGroup.selectAll("text")
-.data(Data)
-.enter()
-.append("text")
 .attr("x", d => xLinearScale(d[labelXaxis]))
 .attr("y", d => yLinearScale(d[labelYaxis]))
 // .attr("dy", "1em")
