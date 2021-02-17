@@ -110,40 +110,29 @@ def country_budget():
     return jsonify(country_budget_all)
 
 ####Budget all graphs
-@app.route("/api/v1.0/budget_revenue_rating_country")
-def budget_revenue_rating_country():
-    budget_revenue_rating_country = []
-    budget_revenue_all= []
-    pgrating_totalbudget_all= []
-    country_budget_all= []
+@app.route("/api/v1.0/country_year_budget_revenue")
+def country_year_budget_revenue():
+    country_year_budget_revenue = []
+    country_year_budget_revenue_all= []
 
-    budget_revenue = session.query (title.budget, title.revenue).filter(title.budget!=0,).filter(title.revenue != 0).all()
-    pgrating_totalbudget = session.query (pg_rating.pg_rating_name, func.sum(title.budget)).filter(title.pg_rating_id==pg_rating.pg_rating_id).group_by(pg_rating.pg_rating_name).all()
-    country_budget = session.query (country.country_name, func.sum(title.budget)).filter(title.show_id == title_country.show_id,).filter(title_country.country_id == country.country_id).group_by(country.country_name).all()
+    country_year_budget_revenue = session.query (country.country_name, title.release_year, func.sum(title.budget), func.sum(title.revenue), func.count(title.show_id))\
+        .filter(country.country_id == title_country.country_id,)\
+        .filter(title_country.show_id == title.show_id)\
+        .group_by(country.country_name, title.release_year)\
+        .order_by(desc(title.release_year))\
+        .all()
     
-    for result in budget_revenue:
+    for result in country_year_budget_revenue:
         row = {}
-        row["Revenue"] = result[1]
-        row["Budget"] = result[0]
-        budget_revenue_all.append(row)
+        row["Country"] = result[0]
+        row["ReleaseYear"] = result[1]
+        row["TotalBudget"] = result[2]
+        row["TotalRevenue"] = result[3]
+        row["TitleCount"] = result[4]
+
+        country_year_budget_revenue_all.append(row)
     
-    for result in pgrating_totalbudget:
-        row = {}
-        row["PG_Rating"] = result[0]
-        row["Total_budget"] = result[1]
-        pgrating_totalbudget_all.append(row)
-    
-    for result in country_budget:
-        row = {}
-        row["country_name"] = result[0]
-        row["country_budget"] = result[1]
-        country_budget_all.append(row)
-    
-    budget_revenue_rating_country.append(budget_revenue_all)
-    budget_revenue_rating_country.append(pgrating_totalbudget_all)
-    budget_revenue_rating_country.append(country_budget_all)
-    
-    return jsonify(budget_revenue_rating_country)
+    return jsonify(country_year_budget_revenue_all)
 
 ####x: Listed In vs y: Count of titles
 @app.route("/api/v1.0/listedin_count")
