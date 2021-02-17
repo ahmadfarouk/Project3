@@ -4,19 +4,7 @@
 
   
   
-}
 
-  // function used for updating circles group with a transition to
-// new circles
-function renderCircles(circlesGroup, newXScale, labelXaxis, newYScale, labelYaxis) {
-
-    circlesGroup.transition()
-      .duration(1000)
-      .attr("cx", d => newXScale(d[labelXaxis]))
-      .attr("cy", d => newYScale(d[labelYaxis]));
-  
-    return circlesGroup;
-}
 
   function renderCirclesText(circlesText, newXScale, labelXaxis, newYScale, labelYaxis) {
 
