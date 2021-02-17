@@ -1,19 +1,5 @@
 
-var svg = d3
-  .select("body")
-  .append("svg")
-  .attr("width", svgWidth)
-  .attr("height", svgHeight);
 
-  // Append an SVG group
-  var chartGroup = svg.append("g")
-  .attr("transform", `translate(${margin.left}, ${margin.top})`);
-
-
-  // Parameters
-
-  var labelXaxis = "Budget";
-  var labelYaxis = "Revenue"
 
 // function used for updating X-Scale var upon click
 function xScale(data, labelXaxis) {
