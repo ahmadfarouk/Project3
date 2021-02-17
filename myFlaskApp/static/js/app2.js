@@ -12,26 +12,7 @@
 
 
 
-    // xLinearScale and yLinearScale 
-// xLinearScale and yLinearScale function above csv import
-
-var xLinearScale = xScale(Data, labelXaxis);
-var yLinearScale= yScale(Data, labelYaxis)
-
-// Create initial axis functions
-var bottomAxis = d3.axisBottom(xLinearScale);
-var leftAxis = d3.axisLeft(yLinearScale);
-
-// append x axis
-var xAxis = chartGroup.append("g")
-  .attr("transform", `translate(0, ${height})`)
-  .call(bottomAxis);
-
-// append y axis
-var yAxis= chartGroup.append("g")
-  // .attr("transform", `translate(0, 0-${height})`)
-  .call(leftAxis);
-
+ 
 // append initial circles
 var circlesGroup = chartGroup.selectAll("circle")
   .data(Data)
