@@ -34,6 +34,34 @@ app = Flask(__name__)
 def index():
     return render_template("index.html")
 
+@app.route("/index1")
+def index1():
+    return render_template("index3.html")
+
+@app.route("/index2")
+def index2():
+    return render_template("index3.html")
+
+####index3
+@app.route("/index3")
+def index3():
+    return render_template("index3.html")
+
+####index4
+@app.route("/index4")
+def index4():
+    return render_template("index4.html")
+
+####TEST ROUTE
+@app.route("/indexold")
+def indexold():
+    return render_template("index-old.html")
+
+####display All data
+@app.route("/list_all_data")
+def lista_all_data():
+    return render_template("all_data.html")
+
 @app.route("/api/v1.0/titles")
 def titles():
     allTitles = []
@@ -138,7 +166,7 @@ def country_year_budget_revenue():
 @app.route("/api/v1.0/listedin_count")
 def listedin_count():
     listedin_count_all= []
-    listedin_count = session.query (listed_in.listed_in_name, func.count(title.show_id)).filter(title.show_id == listed_in_title.show_id,).filter(listed_in.listed_in_id == listed_in_title.listed_in_id).group_by(listed_in.listed_in_name).all()
+    listedin_count = session.query (listed_in.listed_in_name, func.count(title.show_id)).filter(title.show_id == listed_in_title.show_id,).filter(listed_in.listed_in_id == listed_in_title.listed_in_id).group_by(listed_in.listed_in_name).limit(10).all()
     for result in listedin_count:
         row = {}
         row["Listed_in_name"] = result[0]
@@ -206,15 +234,6 @@ def directors_count_revenue():
     #directors_count_revenue.append(directors_titlecount_all)
     directors_count_revenue.append(directors_revenue_all)
     return jsonify (directors_revenue_all)
-
-####display All data
-@app.route("/index4")
-def index4():
-    return render_template("index4.html")
-
-@app.route("/indexold")
-def indexold():
-    return render_template("index-old.html")
     
 ####x: year vs y: revenue for each player
 @app.route("/api/v1.0/release_year_revenue")
@@ -228,11 +247,6 @@ def release_year_revenue():
         row["revenue"] = result[2]
         release_year_revenue_all.append(row)
     return jsonify(release_year_revenue_all)
-
-####display All data
-@app.route("/list_all_data")
-def lista_all_data():
-    return render_template("all_data.html")
 
 ####Export all data
 @app.route("/api/v1.0/all_data")

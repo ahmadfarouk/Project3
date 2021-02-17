@@ -20,7 +20,7 @@ function onlyUnique(value, index, self) {
 
 function init_svg ()
 {
-   var svg = d3
+var svg = d3
   .select("#bar")
   .append("svg")
   .attr("width", svgWidth)
@@ -34,14 +34,13 @@ return chartGroup
 
 // Initial Params
 var chosenXAxis = "TitleCount";
-var chosenXAxis = "director_name";
-var factor = 100000000
+//var chosenXAxis = "director_name";
 
 // function used for updating x-scale var upon click on axis label
 function xScale(DirectorData,chosenXAxis) {
   // create scales
   var xLinearScale = d3.scaleLinear()
-    .domain([d3.min(DirectorData, d => d[chosenXAxis]) * 0.8,
+    .domain([d3.min(DirectorData, d => d[chosenXAxis]) * 0.1,
       d3.max(DirectorData, d => d[chosenXAxis]) * 1.2
     ])
     .range([0, width]);
@@ -104,7 +103,7 @@ function updateToolTip(chosenXAxis, circlesGroup) {
   return circlesGroup;
 }
 
-var parseTime = d3.timeParse("%Y")
+//var parseTime = d3.timeParse("%Y")
 
 // Retrieve data from the CSV file and execute everything below
 function buildPlot (filterYear) {
@@ -161,6 +160,8 @@ function buildPlot (filterYear) {
           .attr("cy", (d,i) => yLinearScale(i))
           .attr("r", 2)
           .attr("fill", "red")
+
+        circlesGroup = renderCircles(circlesGroup, xLinearScale, chosenXAxis);
       
         // Create group for two x-axis labels
         var labelsGroup = chartGroup.append("g")
@@ -183,7 +184,7 @@ function buildPlot (filterYear) {
         // append y axis
         chartGroup.append("text")
           .attr("transform", "rotate(-90)")
-          .attr("y", 0 - margin.left)
+          .attr("y", 0 - margin.left + 50)
           .attr("x", 0 - (height / 2))
           .attr("dy", "1em")
           .classed("axis-text", true)
@@ -192,7 +193,7 @@ function buildPlot (filterYear) {
         // updateToolTip function above csv import
         var circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
       
-        console.log (DirectorData);
+        //console.log (DirectorData);
       
         // x axis labels event listener
         labelsGroup.selectAll("text")
