@@ -242,7 +242,7 @@ def release_year_revenue():
     release_year_revenue = session.query (title.release_year, players.player_name, func.sum(title.revenue)).filter(player_title.show_id == title.show_id,).filter(players.player_id == player_title.player_id).group_by(players.player_name,title.release_year).order_by(desc(func.sum(title.revenue))).all()
     for result in release_year_revenue:
         row = {}
-        row["year"] = result[0]
+        row["release_year"] = result[0]
         row["player_name"] = result[1]
         row["revenue"] = result[2]
         release_year_revenue_all.append(row)

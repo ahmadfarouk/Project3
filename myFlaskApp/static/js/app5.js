@@ -17,8 +17,8 @@ function buildPlot(data, filter_value) {
         y_axis.push(d.revenue)
     });
 
-    //console.log (x_axis)
-    //console.log (y_axis)
+    console.log (x_axis)
+    console.log (y_axis)
 
     var trace1 = {
         x: x_axis,
@@ -126,8 +126,6 @@ function init() {
         firstPlayer_name=data[0].player_name
         //console.log(firstCountry)
         buildPlot(data, firstPlayer_name);
-        // readData(firstSample);
-        // buildGauge(firstSample);
     })
 }
 
