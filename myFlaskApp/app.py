@@ -53,9 +53,9 @@ def index4():
     return render_template("index4.html")
 
 ####TEST ROUTE
-@app.route("/indexold")
-def indexold():
-    return render_template("index-old.html")
+@app.route("/index5")
+def index5():
+    return render_template("index5.html")
 
 ####display All data
 @app.route("/list_all_data")
