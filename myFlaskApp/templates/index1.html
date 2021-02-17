@@ -1,18 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+  <head>
     <link rel="shortcut icon" href="#">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Netflix summary</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ url_for('static', filename='CSS/style.css') }}">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 </head>
 
 <body>
   <div class="div-1">
+    <div class="row">
+      <div class="col-md-1">
+          <nav class="navbar navbar-light">
+              <a class="navbar-brand" href="/" style="color: white">
+                  <span class="mb-0 h1"></span>&nbsp;Netflix&nbsp;</a></span>
+                  
+              </a>
+          </nav>
+      </div>
+  <div class="col-md-9">
+  </div>
+
+  <div class="col-md-2">
+          <nav class="navbar navbar-expand-lg navbar-light ">
+              <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+                <ul class="navbar-nav ml-auto">
+                  <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      Plots
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                      <a class="dropdown-item" href="/index1">Index1</a>
+                      <a class="dropdown-item" href="/index2">Index2</a>
+                      <a class="dropdown-item" href="/index3">Count of Titles</a>
+                      <a class="dropdown-item" href="/index4">Index4</a>
+
+                      
+                  </div>
+                  </li>
+                  
+                  <li class="nav-item">
+                      <a class="nav-link" href="/list_all_data">Data<span class="sr-only"></span></a>
+                  </li>
+                </ul>
+              </div>
+              </nav>        
+  </div>
+</div>
+
     <div class="container">
         <div class="row">
           <div class="col-md-12 jumbotron text-center">
