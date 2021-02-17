@@ -188,7 +188,7 @@ function buildPlot (filterYear) {
           .attr("x", 0 - (height / 2))
           .attr("dy", "1em")
           .classed("axis-text", true)
-          .text("Director Name");
+          .text("Directors");
       
         // updateToolTip function above csv import
         var circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
