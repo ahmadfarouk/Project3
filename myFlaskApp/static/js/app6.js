@@ -87,7 +87,7 @@ function updateToolTip(chosenXAxis, circlesGroup) {
     .attr("class", "tooltip")
     .offset([80, -60])
     .html(function(d) {
-      return (`${d.Player_Name}<br>${label} ${d[chosenXAxis]}`);
+      return (`${d.player_Name}<br>${label} ${d[chosenXAxis]}`);
     });
 
   circlesGroup.call(toolTip);
