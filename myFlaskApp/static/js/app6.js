@@ -34,14 +34,14 @@ return chartGroup
 
 // Initial Params
 var chosenXAxis = "TitleCount";
-//var chosenXAxis = "director_name";
+//var chosenXAxis = "player_name";
 
 // function used for updating x-scale var upon click on axis label
-function xScale(DirectorData,chosenXAxis) {
+function xScale(PlayerData,chosenXAxis) {
   // create scales
   var xLinearScale = d3.scaleLinear()
-    .domain([d3.min(DirectorData, d => d[chosenXAxis]) * 0.1,
-      d3.max(DirectorData, d => d[chosenXAxis]) * 1.2
+    .domain([d3.min(PlayerData, d => d[chosenXAxis]) * 0.1,
+      d3.max(PlayerData, d => d[chosenXAxis]) * 1.2
     ])
     .range([0, width]);
 
@@ -87,17 +87,17 @@ function updateToolTip(chosenXAxis, circlesGroup) {
     .attr("class", "tooltip")
     .offset([80, -60])
     .html(function(d) {
-      return (`${d.Director_Name}<br>${label} ${d[chosenXAxis]}`);
+      return (`${d.Player_Name}<br>${label} ${d[chosenXAxis]}`);
     });
 
   circlesGroup.call(toolTip);
 
   circlesGroup.on("mouseover", function(data) {
-    toolTip.show(data);
+    toolTip.show(data,this);
   })
     // onmouseout event
     .on("mouseout", function(data) {
-      toolTip.hide(data,this);
+      toolTip.hide(data);
     });
 
   return circlesGroup;
@@ -110,31 +110,31 @@ function buildPlot (filterYear) {
     
     var chartGroup = init_svg ()
 
-    data = d3.json("/api/v1.0/directors_count_revenue").then(function(AllDirectorData, err) {
+    data = d3.json("/api/v1.0/players_count_revenue").then(function(AllPlayerData, err) {
         if (err) throw err;
       
         var panel = d3.select("#graph-metadata");
         panel.html("");
     
-        panel.append("h6").text("The graph shows the Number of titles per director and revenue each year.");
+        panel.append("h6").text("The graph shows the Number of titles per player and revenue each year.");
 
         // parse data
       
-        AllDirectorData.forEach(function(data) {
-          data.Director_Name = data.Director_Name;
+        AllPlayerData.forEach(function(data) {
+          data.Player_Name = data.Player_Name;
           data.ReleaseYear = data.ReleaseYear;
           data.TitleCount = +data.TitleCount;
           data.Revenue = +data.Revenue;
          });
       
-         var DirectorData=AllDirectorData.filter(d => d.ReleaseYear == filterYear)
+         var PlayerData=AllPlayerData.filter(d => d.ReleaseYear == filterYear)
       
         // xLinearScale function above csv import
-        var xLinearScale = xScale(DirectorData, chosenXAxis);
+        var xLinearScale = xScale(PlayerData, chosenXAxis);
       
         // Create y scale function
         var yLinearScale = d3.scaleLinear()
-          .domain([0, d3.max(DirectorData, (d,i) => i)])
+          .domain([0, d3.max(PlayerData, (d,i) => i)])
           .range([height, 0]);
       
         // Create initial axis functions
@@ -153,7 +153,7 @@ function buildPlot (filterYear) {
       
         // append initial circles
         var circlesGroup = chartGroup.selectAll("circle")
-          .data(DirectorData)
+          .data(PlayerData)
           .enter()
           .append("circle")
           .attr("cx", function (d) {xLinearScale(d[chosenXAxis])})
@@ -188,12 +188,12 @@ function buildPlot (filterYear) {
           .attr("x", 0 - (height / 2))
           .attr("dy", "1em")
           .classed("axis-text", true)
-          .text("Directors");
+          .text("Players");
       
         // updateToolTip function above csv import
         var circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
       
-        //console.log (DirectorData);
+        //console.log (PlayerData);
       
         // x axis labels event listener
         labelsGroup.selectAll("text")
@@ -209,7 +209,7 @@ function buildPlot (filterYear) {
       
               // functions here found above csv import
               // updates x scale for new data
-              xLinearScale = xScale(DirectorData, chosenXAxis);
+              xLinearScale = xScale(PlayerData, chosenXAxis);
       
               // updates x axis with transition
               xAxis = renderAxes(xLinearScale, xAxis);
@@ -266,7 +266,7 @@ function init ()
     drop_down=d3.select('#selDataset');
     menu_list = [] ;
 
-    d3.json("/api/v1.0/directors_count_revenue").then((data) => {
+    d3.json("/api/v1.0/players_count_revenue").then((data) => {
         
         data.forEach((item)=>
         {

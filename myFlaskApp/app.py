@@ -52,10 +52,15 @@ def index3():
 def index4():
     return render_template("index4.html")
 
-####TEST ROUTE
+####Index5 ROUTE
 @app.route("/index5")
 def index5():
     return render_template("index5.html")
+
+####Index6 ROUTE
+@app.route("/index6")
+def index6():
+    return render_template("index6.html")
 
 ####display All data
 @app.route("/list_all_data")
@@ -212,18 +217,6 @@ def directors_count_revenue():
         .group_by(title.release_year, director.director_name)\
         .order_by(desc(func.count(title.show_id)))\
         .all()
-    # directors_titlecount = session.query (director.director_name, title.release_year)\
-    #     .filter(director.director_id == director_title.director_id,)\
-    #     .filter(title.show_id == director_title.show_id)\
-    #     .group_by(director.director_name, title.release_year)\
-    #     .order_by(desc(func.count(title.show_id)))\
-    #     .all()
-    # for result in directors_titlecount:
-    #     row = {}
-    #     row["Director_Name"] = result[0]
-    #     row["ReleaseYear"] = result[1]
-    #     row["TitleCount"] = result[2]
-    #     directors_titlecount_all.append(row)
     for result in directors_revenue:
         row = {}
         row["Director_Name"] = result[0]
@@ -231,9 +224,28 @@ def directors_count_revenue():
         row["Revenue"] = result[2]
         row["TitleCount"] = result[3]        
         directors_revenue_all.append(row)
-    #directors_count_revenue.append(directors_titlecount_all)
     directors_count_revenue.append(directors_revenue_all)
     return jsonify (directors_revenue_all)
+
+@app.route("/api/v1.0/players_count_revenue")
+def players_count_revenue():
+    players_count_revenue = []
+    players_revenue_all= []
+    players_revenue = session.query (players.player_name, title.release_year, func.sum(title.revenue), func.count(title.show_id))\
+        .filter(players.player_id == player_title.player_id,)\
+        .filter(title.show_id == player_title.show_id)\
+        .group_by(title.release_year, players.player_name)\
+        .order_by(desc(func.count(title.show_id)))\
+        .all()
+    for result in players_revenue:
+        row = {}
+        row["player_Name"] = result[0]
+        row["ReleaseYear"] = result[1]
+        row["Revenue"] = result[2]
+        row["TitleCount"] = result[3]        
+        players_revenue_all.append(row)
+    players_count_revenue.append(players_revenue_all)
+    return jsonify (players_revenue_all)
     
 ####x: year vs y: revenue for each player
 @app.route("/api/v1.0/release_year_revenue")
