@@ -76,7 +76,7 @@ align-content: center ;
 }
 
 .div-1 {
-  background: {{ url_for('static', filename='images/Netflix..PNG') }} no-repeat center;
+  background: {{ url_for('static', filename='images/Netflix.PNG') }} no-repeat center;
   background-size: cover;
   height: 1200px;
   position: relative;
