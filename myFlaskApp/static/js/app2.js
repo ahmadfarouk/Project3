@@ -145,7 +145,7 @@ function buildPlot (filterYear) {
             if (err) throw err;
             var panel = d3.select("#graph-metadata");
             panel.html("");
-            panel.append("h6").text("The graph shows the Number of titles per director and revenue each year.");
+            panel.append("h6").text("The graph shows the Number of titles per Country, budget and revenue each year.");
           
             CountryData.forEach(function(data) {
 
